@@ -6,18 +6,20 @@ const requestLoggerMiddleware = require('./middlewares/requestLogger')
 const errorHandlerMiddleware = require('./middlewares/errorHandler') ;
 
 
-const categoryRouter = require('./routers/categoryRouter')
+const categoryRouter = require('./routers/categoryRouter') ;
+const productRouter = require('./routers/productRouter')
 const db = require('./models') ;
 const POST = 3000 ;
 
 app.use(requestLoggerMiddleware) ;
 
-app.use( express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(express.json())
 
 
 
-app.use('/api/category' , categoryRouter)
+app.use('/api/category' , categoryRouter) ;
+app.use('/api/product', productRouter)
 app.use(errorHandlerMiddleware)
 db.sequelize.authenticate()
 .then(() => {

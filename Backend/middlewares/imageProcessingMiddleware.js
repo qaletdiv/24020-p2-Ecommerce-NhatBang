@@ -10,7 +10,7 @@ exports.resizeImage = async (req, res, next) => {
     try {
         const originalname = path.parse(req.file.originalname).name;
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = ".jpeg ";
+        const ext = ".jpeg";
         const finalFileName = `image-${originalname}-${uniqueSuffix}${ext}` ;
         req.file.processedFileName = finalFileName ;
 
