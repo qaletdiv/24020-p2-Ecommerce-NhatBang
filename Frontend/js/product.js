@@ -1,4 +1,4 @@
-import { imagesList, products } from './products.data.js';
+// import { imagesList, products } from './products.data.js';
 
 //
 const openPopup = document.querySelector(".open-popup");
@@ -56,9 +56,9 @@ closeInputFind.addEventListener('blur', () => {
 
 const loadMoreBtn = document.querySelector('#load-more-btn');
 const productMainShirtPage = document.querySelector('.product-shirt-main-page')
-let currenDisplay = 8;
+let currentDisplay = 8;
 
-
+let products = [];
 // hien thij ta ca san pham 
 function renderProduct(container, start, end) {
   const showProduct = products.slice(start, end);
@@ -76,7 +76,7 @@ function renderProduct(container, start, end) {
     }
     // hien thi gia ca 
     let priceHTML = ` <p>${item.price.toLocaleString('vi-VN')}đ</p>`
-    if (item.priceSale < item.price) {
+    if (item.priceSale > 0 && item.priceSale < item.price) {
       priceHTML = `
       <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
       <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
@@ -86,7 +86,7 @@ function renderProduct(container, start, end) {
     divEl.innerHTML = `
       <div class="img_hidden">
         <a href="product-detail.html?id=${item.id}" class="img_box">
-          <img src="${item.imageURL}" alt="${item.name}" />
+          <img src="http://localhost:3000/uploads/${item.imageURL}" alt="${item.name}">
           <div class="product_overlay"></div>
           ${saleHTML}
         </a>
@@ -100,8 +100,21 @@ function renderProduct(container, start, end) {
     container.appendChild(divEl);
   });
 }
+
+const fetchProduct = async () => {
+  const res = await fetch('http://localhost:3000/api/product');
+  products = await res.json();
+
+  console.log(products);
+  if (!Array.isArray(products)) {
+    console.error("API khong tra ve mang san pham");
+    return;
+  }
+
+  renderProduct(productMainShirtPage, 0, currentDisplay);
+}
 // hien thi san pham trang product
-renderProduct(productMainShirtPage, 0, currenDisplay);
+
 
 // hien thi san pham la khi click nu hoac nam 
 function renderProductList(container, list) {
@@ -120,7 +133,7 @@ function renderProductList(container, list) {
     }
     // hien thi gia ca 
     let priceHTML = ` <p>${item.price.toLocaleString('vi-VN')}đ</p>`
-    if (item.priceSale < item.price) {
+    if (item.priceSale>0 && item.priceSale < item.price) {
       priceHTML = `
       <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
       <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
@@ -130,7 +143,7 @@ function renderProductList(container, list) {
     divEl.innerHTML = `
       <div class="img_hidden">
         <a href="product-detail.html?id=${item.id}" class="img_box">
-          <img src="${item.imageURL}" alt="${item.name}" />
+           <img src="http://localhost:3000/uploads/${item.imageURL}" alt="${item.name}">
           <div class="product_overlay"></div>
           ${saleHTML}
         </a>
@@ -162,7 +175,7 @@ selectDrop.addEventListener("change", () => {
     renderProductList(productMainShirtPage, shirtWomen)
   }
   else {
-    renderProduct(productMainShirtPage, 0, currenDisplay)
+    renderProduct(productMainShirtPage, 0, currentDisplay)
   }
   loadMoreBtn.classList.add('hidden');
 
@@ -202,7 +215,7 @@ inputFind.addEventListener('keydown', (event) => {
 
 // click remove mat nut hien thi them
 loadMoreBtn.addEventListener("click", () => {
-  renderProduct(productMainShirtPage, currenDisplay, products.length);
+  renderProduct(productMainShirtPage, currentDisplay, products.length);
   loadMoreBtn.classList.add('hidden')
 });
 
@@ -253,7 +266,7 @@ priceFilter.addEventListener('change', () => {
     loadMoreBtn.classList.add('hidden')
   }
   else {
-    renderProduct(productMainShirtPage, 0, currenDisplay)
+    renderProduct(productMainShirtPage, 0, currentDisplay)
     loadMoreBtn.classList.remove('hidden')
   }
 })
@@ -325,11 +338,13 @@ spanLogOut.addEventListener('click', () => {
 });
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
-buttonMyAccount.addEventListener('click' ,() => {
-  if(currentUser) {
-    window.location.href ='my-account.html'
+buttonMyAccount.addEventListener('click', () => {
+  if (currentUser) {
+    window.location.href = 'my-account.html'
   }
   else {
     window.location.href = 'register.html'
   }
 })
+
+fetchProduct()

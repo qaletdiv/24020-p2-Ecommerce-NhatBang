@@ -1,5 +1,6 @@
 const { Product } = require('../models');
-
+const path = require('path');
+const fs = require('fs');
 exports.getAllProducts = async (req, res, next) => {
     try {
         const products = await Product.findAll()
@@ -35,7 +36,10 @@ exports.createProduct = async (req, res, next) => {
 }
 exports.updateProduct = async ( req , res , next) => {
     try {
-        
+        const product = await Product.findByPk(req.params.id);
+        if (!product) {
+            return res.status(404).json({ message: 'Khong tim thay san pham' });
+        }
         const { name, description, price, priceSale, sizes, tags, categoryId } = req.body;
         const processedImage = req.file ? req.file.processedFileName : null;
 
@@ -50,6 +54,13 @@ exports.updateProduct = async ( req , res , next) => {
         };
 
         if (processedImage) {
+            if(product.imageURL) {
+                const oldImagePath = path.join(__dirname , '../public/uploads' , product.imageURL) ;
+                fs.unlink(oldImagePath ,(err) => {
+                    if(err) console.log('loi xoa anh cu' ,err.message)
+                }) 
+
+            }
             updateData.imageURL = processedImage;
         }
 
@@ -62,8 +73,7 @@ exports.updateProduct = async ( req , res , next) => {
         if (updatedRows === 0) {
             return res.status(404).json({ message: 'Khong tim thay san pham' });
         }
-         const updateProduct = await Product.findByPk(req.params.id) ;
-        res.json({ message: 'Cap nhat san pham thanh cong' , data : updateProduct});
+        res.json({ message: 'Cap nhat san pham thanh cong' , data : product});
     } catch (error) {
         next(error);
     }

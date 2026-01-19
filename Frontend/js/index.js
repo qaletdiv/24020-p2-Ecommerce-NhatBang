@@ -1,5 +1,6 @@
-import { imagesList, products } from './products.data.js';
+import { imagesList } from './products.data.js';
 
+let filterProducts = [];
 //
 const openPopup = document.querySelector(".open-popup");
 const navigationPopup = document.querySelector(".navigation-popup");
@@ -116,13 +117,11 @@ navigationRight.addEventListener('click', navigationRightButton)
 
 const loadMoreBtn = document.querySelector('#load-more-btn');
 const productMainShirt = document.querySelector('.product-shirt-main')
-const productMainShirtPage = document.querySelector('.product-shirt-main-page')
-let currenDisplay = 6;
+
+let currentDisplay = 6;
 
 
-const filterProducts = products.filter(item => {
-   return item.tags && item.tags.includes('noi bat')
-})
+
 function renderProduct(container, start, end) {
   const showProduct = filterProducts.slice(start, end)
   showProduct.forEach(item => {
@@ -139,17 +138,16 @@ function renderProduct(container, start, end) {
     }
     // hien thi gia ca 
     let priceHTML = ` <p>${item.price.toLocaleString('vi-VN')}đ</p>`
-    if (item.priceSale < item.price) {
+    if (item.priceSale > 0 && item.priceSale < item.price ) {
       priceHTML = `
       <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
       <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
       `
-
     }
     // hien thi san pham noi  bat 
-    let outsantHTML = '';
+    let outSandHTML = '';
     if (item.tags && item.tags.includes('noi bat')) {
-      outsantHTML = ` <img src="${item.imageURL}" alt="${item.name}" />`
+      outSandHTML  = ` <img src="http://localhost:3000/uploads/${item.imageURL}" alt="${item.name}">`
     }
     else {
       return;
@@ -157,7 +155,7 @@ function renderProduct(container, start, end) {
     divEl.innerHTML = `
       <div class="img_hidden">
         <a href="product-detail.html?id=${item.id}" class="img_box">
-         ${outsantHTML}
+         ${outSandHTML }
           <div class="product_overlay"></div>
           ${saleHTML}
         </a>
@@ -175,57 +173,32 @@ function renderProduct(container, start, end) {
   }
 }
 
+const fetchProduct = async () => {
+  const res = await fetch('http://localhost:3000/api/product');
+  const products = await res.json();
 
-// hien thi san pham trang index 
-renderProduct(productMainShirt, 0, currenDisplay)
+  console.log(products); 
 
-// renderProduct(currenDisplay, products.length);
+  // products = result.data || result; 
+  if (!Array.isArray(products)) {
+    console.error("API khong tra ve mang san pham");
+    return;
+  }
+
+  filterProducts = products.filter(item => { return item.tags && item.tags.includes('noi bat') }) ;
+
+  renderProduct(productMainShirt, 0, 6);
+};
+
+
 
 loadMoreBtn.addEventListener("click", () => {
-  const prevDisplay = currenDisplay;
-  currenDisplay += 8
-  renderProduct(productMainShirt  , prevDisplay, currenDisplay);
+  const prevDisplay = currentDisplay;
+  currentDisplay += 8
+  renderProduct(productMainShirt  , prevDisplay, currentDisplay);
   // loadMoreBtn.classList.add('hidden')
 });
-function renderProductList(container, list) {
-  container.innerHTML = '';
-  list.forEach(item => {
-    const divEl = document.createElement('div');
-    divEl.classList.add('product-main');
-    // hien thi sale 
-    let saleHTML = '';
-    if (item.tags) {
-      if (item.tags && item.tags.includes('sale 30%')) {
-        saleHTML = `<div class="sale">sale 30%</div>`;
-      } else if (item.tags && item.tags.includes('sale 40%')) {
-        saleHTML = `<div class="sale">sale 40%</div>`;
-      }
-    }
-    // hien thi gia ca 
-    let priceHTML = ` <p>${item.price.toLocaleString('vi-VN')}đ</p>`
-    if (item.priceSale < item.price) {
-      priceHTML = `
-      <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
-      <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
-      `
 
-    }
-    divEl.innerHTML = `
-      <div class="img_hidden">
-        <a href="product-detail.html?id=${item.id}" class="img_box">
-          <img src="${item.imageURL}" alt="${item.name}" />
-          <div class="product_overlay"></div>
-          ${saleHTML}
-        </a>
-      </div>
-      <a href="product-detail.html?id=${item.id}" class="product_name">${item.name}</a>
-      <div class="money_sale">
-        ${priceHTML}
-      </div>
-    `;
-    container.appendChild(divEl);
-  })
-}
 const inputFind = document.querySelector('.input-find');
 inputFind.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
@@ -288,3 +261,4 @@ buttonMyAccount.addEventListener('click' ,() => {
 
 
 
+fetchProduct() ;
