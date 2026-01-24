@@ -88,3 +88,8 @@ exports.login = async(req , res , next) => {
 exports.getMe = async(req ,res, next) => {
     res.json({user : req.user})
 }
+
+exports.getAllUser = async(req , res, next) => {
+    const getAllUser = await User.findAll() ;
+    res.json(getAllUser) ;
+}

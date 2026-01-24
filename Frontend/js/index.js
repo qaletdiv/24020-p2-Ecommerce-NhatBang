@@ -165,7 +165,7 @@ function renderProduct(container, products) {
 }
 
 let page = 1;
-const limit = 4;
+const limit = 3;
 
 
 async function fetchProduct() {

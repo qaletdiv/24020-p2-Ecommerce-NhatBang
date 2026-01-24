@@ -6,9 +6,10 @@ const app = express() ;
 const requestLoggerMiddleware = require('./middlewares/requestLogger')
 const errorHandlerMiddleware = require('./middlewares/errorHandler') ;
 
-const userRouter = require('./routers/userRouter')
+const userRouter = require('./routers/userRouter') ;
 const categoryRouter = require('./routers/categoryRouter') ;
-const productRouter = require('./routers/productRouter')
+const productRouter = require('./routers/productRouter') ;
+const cartRouter = require('./routers/cartRouter') ;
 const db = require('./models') ;
 const POST = 3000 ;
 
@@ -22,7 +23,8 @@ app.use(express.json())
 
 app.use('/api/user' , userRouter)
 app.use('/api/category' , categoryRouter) ;
-app.use('/api/product', productRouter)
+app.use('/api/product', productRouter) ;
+app.use('/api/cart' ,cartRouter)
 app.use(errorHandlerMiddleware)
 db.sequelize.authenticate()
 .then(() => {
