@@ -1,5 +1,5 @@
 const express = require('express') ;
-const { createProduct, getAllProducts, updateProduct, deleteProduct, getProductId } = require('../controllers/productController');
+const { createProduct, getAllProducts, updateProduct, deleteProduct, getProductId, getSimilarProducts } = require('../controllers/productController');
 const { uploadSingleImage } = require('../middlewares/uploadMiddleware');
 const { resizeImage } = require('../middlewares/imageProcessingMiddleware');
 const authenticateToken = require('../middlewares/authenticateToken');
@@ -13,6 +13,9 @@ router.post('/' ,
 )
 router.get('/' ,
     getAllProducts
+)
+router.get('/similar' ,
+    getSimilarProducts
 )
 router.get('/:id' ,
     getProductId

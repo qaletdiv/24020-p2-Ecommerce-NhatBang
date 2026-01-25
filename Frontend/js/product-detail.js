@@ -59,8 +59,10 @@ closeInputFind.addEventListener('blur', () => {
 const productShirtSame = document.querySelector('.product-shirt-main-same')
 const loadMoreBtn = document.querySelector('#load-more-btn');
 
-function renderProduct(container, products) {
-  container.innerHTML = "";
+function renderProduct(container, products, isAppend = false) {
+  if (!isAppend) {
+    container.innerHTML = "";
+  }
   products.forEach(item => {
 
     // if (!item.tags || !item.tags.includes('noi bat')) return;
@@ -69,10 +71,9 @@ function renderProduct(container, products) {
     divEl.classList.add('product-main');
 
     let saleHTML = '';
-    if (item.tags.includes('sale 30%')) {
-      saleHTML = `<div class="sale">sale 30%</div>`;
-    } else if (item.tags.includes('sale 40%')) {
-      saleHTML = `<div class="sale">sale 40%</div>`;
+    const saleTag = item.tags.find(tag => tag.includes('sale'));
+    if (saleTag) {
+      saleHTML = `<div class="sale">${saleTag}</div>`;
     }
 
     let priceHTML = `<p>${item.price.toLocaleString('vi-VN')}đ</p>`;
@@ -104,39 +105,44 @@ function renderProduct(container, products) {
 }
 
 let page = 1;
-const limit = 4;
+const limit = 3;
 
+let currentSimilarProducts = []; // Mảng lưu trữ để cộng dồn nếu cần
 
-async function fetchProduct() {
-  let url = `${ENV.API_URL}/api/product?page=${page}&limit=${limit}&categoryId=${currentCategoryId}`;
+async function fetchProduct(isLoadMore = false) {
+  if (!isLoadMore) {
+    page = 1;
+    productShirtSame.innerHTML = "";
+  }
 
-  const res = await fetch(url);
-  const result = await res.json();
+  const url = `${ENV.API_URL}/api/product/similar?categoryId=${currentCategoryId}&excludeId=${productID}&limit=${limit}&page=${page}`;
 
-  // Loại bỏ chính sản phẩm đang xem
-  const similarProducts = result.products.filter(item =>
-    Number(item.categoryId) === Number(currentCategoryId) &&
-    Number(item.id) !== Number(productID)
-  );
+  try {
+    const res = await fetch(url);
+    const result = await res.json();
+    const newProducts = result.products;
 
-  renderProduct(productShirtSame, similarProducts);
+    renderProduct(productShirtSame, newProducts, isLoadMore); 
 
-  if (page >= result.totalPage) {
-    loadMoreBtn.classList.add('hidden');
-  } else {
-    loadMoreBtn.classList.remove('hidden');
+    if (result.totalPage && page >= result.totalPage) {
+      loadMoreBtn.classList.add('hidden');
+    } else if (newProducts.length < limit) {
+      loadMoreBtn.classList.add('hidden');
+    } else {
+      loadMoreBtn.classList.remove('hidden');
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm tương tự:", error);
   }
 }
 
 
 
-
 loadMoreBtn.addEventListener("click", () => {
   page++;
-  fetchProduct()
+  fetchProduct(true)
   // loadMoreBtn.classList.add('hidden')
 });
-// khi mìn add to cart thi phải kiểm tra xem đã đăng nhập chưa , nếu chưa thì qua trang đăng nhâp j
 
 
 //

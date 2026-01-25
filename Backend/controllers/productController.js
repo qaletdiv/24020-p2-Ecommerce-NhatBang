@@ -91,6 +91,33 @@ exports.getProductId = async (req, res, next) => {
         next(error);
     }
 }
+exports.getSimilarProducts = async (req, res, next) => {
+    try {
+        const { categoryId, excludeId, limit = 3, page = 1 } = req.query;
+
+        const offset = (page - 1) * limit;
+
+        const { rows: products, count } = await Product.findAndCountAll({
+            where: {
+                categoryId: categoryId,
+                id: { [Op.ne]: excludeId }
+            },
+            limit: Number(limit),
+            offset: Number(offset),
+            include: [{ model: Category, as: 'category' }]
+        });
+
+        const totalPage = Math.ceil(count / limit);
+
+        res.json({
+            products,
+            totalPage
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.createProduct = async (req, res, next) => {
     try {
 
