@@ -79,6 +79,13 @@ buttonLogin.addEventListener('click' ,async(even) => {
       return;
     }
     localStorage.setItem('accessToken' , data.token) ;
+    const userSave = {
+      email: data.user.email,
+      fullname: data.user.fullname,
+      phone : data.user.phone ,
+      address : data.user.address ,
+    };
+    localStorage.setItem('currentUser', JSON.stringify(userSave)); 
     alert('Đăng nhập thành công')
     window.location.href = 'index.html'
   } catch (error) {
@@ -112,14 +119,16 @@ const spanLogOut = document.querySelector('.log-out');
 spanLogOut.addEventListener('click', () => {
   const result = confirm("Bạn chắc chắn muốn đăng xuất không");
   if (result) {
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('currentToken');
     window.location.href = 'index.html';
   }
 });
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
 buttonMyAccount.addEventListener('click' ,() => {
-  if(pareUser) {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
     window.location.href ='my-account.html'
   }
   else {

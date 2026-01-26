@@ -255,14 +255,16 @@ const spanLogOut = document.querySelector('.log-out');
 spanLogOut.addEventListener('click', () => {
   const result = confirm("Bạn chắc chắn muốn đăng xuất không");
   if (result) {
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('currentToken');
     window.location.href = 'index.html';
   }
 });
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
 buttonMyAccount.addEventListener('click', () => {
-  if (currentUser) {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
     window.location.href = 'my-account.html'
   }
   else {

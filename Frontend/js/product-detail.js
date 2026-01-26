@@ -152,7 +152,9 @@ const currentUser = JSON.parse(localStorage.getItem('currentUser')) || [];
 const quantityElement = document.querySelector('.update-content-cart');
 
 if (currentUser && quantityElement) {
-  const totalQuantity = cartItems.reduce((total, item) => total + Number(item.quantity), 0);
+  const totalQuantity = cartItems
+    .filter(item => item.email === currentUser.email)
+    .reduce((total, item) => total + Number(item.quantity), 0);
 
   if (totalQuantity > 0) {
     quantityElement.textContent = totalQuantity;
@@ -172,6 +174,7 @@ const spanLogOut = document.querySelector('.log-out');
 spanLogOut.addEventListener('click', () => {
   const result = confirm("Bạn chắc chắn muốn đăng xuất không");
   if (result) {
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('currentUser');
     window.location.href = 'index.html';
   }
@@ -180,7 +183,8 @@ spanLogOut.addEventListener('click', () => {
 
 const buttonMyAccount = document.querySelector('.btn-my-account');
 buttonMyAccount.addEventListener('click', () => {
-  if (currentUser) {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
     window.location.href = 'my-account.html'
   }
   else {
@@ -270,14 +274,14 @@ fetch(`${ENV.API_URL}/api/product/${productID}`)
     })
     const addToCart = document.querySelector('.button-detail');
     addToCart.addEventListener('click', () => {
-      // const user = localStorage.getItem('user')
-      // const userParse = JSON.parse(user);
-      const currentUser = localStorage.getItem('currentUser');
-      const parseUser = JSON.parse(currentUser)
 
-      if (!parseUser) {
-        alert('Đăng nhập trước khi thêm vào giỏ hàng')
-        window.location.href = 'login.html'
+
+      const token = localStorage.getItem('accessToken');
+      const parseUser = JSON.parse(localStorage.getItem('currentUser'));
+
+      if (!token || !parseUser) {
+        alert('Đăng nhập trước khi thêm vào giỏ hàng');
+        window.location.href = 'login.html';
         return;
       }
 
@@ -291,14 +295,7 @@ fetch(`${ENV.API_URL}/api/product/${productID}`)
       const img = productDetail.imageURL
       const id = productDetail.id;
       // lay localStorage ve 
-      const currentCart = localStorage.getItem('cart');
-      let cart = [];
-      if (currentCart !== null) {
-        cart = JSON.parse(currentCart);
-      }
-
-
-
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const newProductCart = {
         id,
         name,
@@ -307,17 +304,18 @@ fetch(`${ENV.API_URL}/api/product/${productID}`)
         quantity,
         img,
         email: parseUser.email
-      }
-      const cartIndex = cart.find(item => {
-        return item.id === id && item.sizes == dropSizes && item.email === parseUser.email;
-      });
+      };
+
+      const cartIndex = cart.find(item =>
+        item.id === id &&
+        item.sizes === dropSizes &&
+        item.email === parseUser.email
+      );
 
       if (cartIndex) {
         cartIndex.quantity += quantity;
-      }
-      else {
-        cart.push(newProductCart)
-        console.log(cart)
+      } else {
+        cart.push(newProductCart);
       }
       localStorage.setItem('cart', JSON.stringify(cart));
 
