@@ -75,11 +75,11 @@ function renderProduct(container, products) {
       saleHTML = `<div class="sale">sale 40%</div>`;
     }
 
-    let priceHTML = `<p>${item.price.toLocaleString('vi-VN')}đ</p>`;
+    let priceHTML = `<p>${Number(item.price).toLocaleString('vi-VN')}đ</p>`;
     if (item.priceSale > 0 && item.priceSale < item.price) {
       priceHTML = `
-        <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
-        <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
+        <p>${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
+        <p class="sale-m">${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
       `;
     }
 

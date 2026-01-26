@@ -1,5 +1,5 @@
 import { imagesList, products } from './products.data.js';
-
+import { ENV } from './config.js'
 //
 const openPopup = document.querySelector(".open-popup");
 const navigationPopup = document.querySelector(".navigation-popup");
@@ -50,48 +50,81 @@ closeInputFind.addEventListener('blur', () => {
 /// click vao nut dang ky 
 const inputName = document.querySelector('#input-name-re');
 const inputEmail = document.querySelector('#input-email-re');
+const inputNumber = document.querySelector('#input-number-re') ;
+const inputAddress = document.querySelector('#input-address-re') ;
 const inputPassword = document.querySelector('#input-password-re');
-const inputConfirmPassword = document.querySelector('#input-confirm-password');
+
 const buttonRegister = document.querySelector('.Button-register');
 const loadUser = localStorage.getItem('user');
 let user = [];
 if( loadUser !== null) {
     user = JSON.parse(loadUser)
 }
-buttonRegister.addEventListener('click' ,(event) => {
+buttonRegister.addEventListener('click' ,async (event) => {
     event.preventDefault();
-    const name = inputName.value.trim();
+    const fullname= inputName.value.trim();
     const email = inputEmail.value.trim();
+    const phone= inputNumber.value.trim() ;
+    const address = inputAddress.value.trim() ;
     const password = inputPassword.value.trim();
-    const confirmPassword = inputConfirmPassword.value.trim();
-    if(name === '' || email === '' || password === '' || confirmPassword === ''){
+  if (fullname === '' || email === '' || phone === '' || address === '' || password === ''){
         alert('Không được bỏ trống');
-        return ;
-    }
-    // check coi email nay da dang ky chua
-    const target = user.find(item => {
-        return item.email === email ;
-    })
-    if( target) {
-        alert( 'Email này đã được sử dụng ')
-        return ;
-    }
-
-    // check xem mat khau nhat xac nhan lai co trung nhau khong 
-    if( password !== confirmPassword) {
-        alert('Mật khẩu không trùng khớp');
         return ;
     }
     if(password.length < 6){
         alert('Mật khẩu trên 6 chữ số')
         return ;
     }
-    user.push({
-        name : name ,
-        email : email ,
-        password : password ,
-    })
-    localStorage.setItem('user' ,JSON.stringify(user));
+    
+    try {
+      const res = await fetch(`${ENV.API_URL}/api/auth/register` ,{
+          method : 'POST' ,
+          headers : {
+            'Content-Type' : 'application/json' 
+          },
+          body : JSON.stringify({
+            fullname ,
+             email , 
+             phone ,
+             address ,
+             password ,
+
+          })
+      })
+      const data = await res.json() ;
+
+      if (!res.ok) {
+        // xóa lỗi cũ
+        document.getElementById('name-error').innerText = '';
+        document.getElementById('email-error').innerText = '';
+        document.getElementById('phone-error').innerText = '';
+        document.getElementById('address-error').innerText = '';
+        document.getElementById('password-error').innerText = '';
+
+        // hiển thị lỗi mới
+        data.errors.forEach(err => {
+          if (err.param === 'fullname') {
+            document.getElementById('name-error').innerText = err.msg;
+          }
+          if (err.param === 'email') {
+            document.getElementById('email-error').innerText = err.msg;
+          }
+          if (err.param === 'phone') {
+            document.getElementById('phone-error').innerText = err.msg;
+          }
+          if (err.param === 'address') {
+            document.getElementById('address-error').innerText = err.msg;
+          }
+          if (err.param === 'password') {
+            document.getElementById('password-error').innerText = err.msg;
+          }
+        });
+
+        return; // không cho chạy tiếp
+      }
+    } catch (error) {
+      alert('Lỗi kết nối server');
+    }
     alert('Đăng ký thành công')
     window.location.href ='login.html'
 

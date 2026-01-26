@@ -141,20 +141,32 @@
                     <p>REGISTER</p>
                     <div class="div-input">
                         <label for="name">Họ và tên</label>
-                        <input id="input-name-re" type="name" name="user_name" placeholder="Nhập họ và tên">
+                        <input id="input-name-re" type="text" placeholder="Nhập họ và tên">
+                        <span id="name-error" style="color:red"></span>
                     </div>
+
                     <div class="div-input">
                         <label for="email">Email</label>
-                        <input id="input-email-re" type="email" name="user_email" placeholder="Nhập email">
+                        <input id="input-email-re" type="email" placeholder="Nhập email">
+                        <span id="email-error" style="color:red"></span>
                     </div>
+
+                    <div class="div-input">
+                        <label for="phone">Số điện thoại</label>
+                        <input id="input-number-re" type="text" placeholder="Nhập số điện thoại">
+                        <span id="phone-error" style="color:red"></span>
+                    </div>
+
+                    <div class="div-input">
+                        <label for="address">Địa chỉ</label>
+                        <input id="input-address-re" type="text" placeholder="Nhập địa chỉ">
+                        <span id="address-error" style="color:red"></span>
+                    </div>
+
                     <div class="div-input">
                         <label for="password">Password</label>
-                        <input id="input-password-re" type="password" name="user_password" placeholder="Nhập password">
-                    </div>
-                    <div class="div-input">
-                        <label for="password">Confirm Password</label>
-                        <input id="input-confirm-password" type="password" name="user_confirm_password"
-                            placeholder="Xác Nhận password">
+                        <input id="input-password-re" type="password" placeholder="Nhập password">
+                        <span id="password-error" style="color:red"></span>
                     </div>
                     <div class="div-register">
                         <button class="Button-register">Đăng Ký</button>

@@ -14,8 +14,8 @@ router.post('/' ,
 router.get('/' ,
     getAllProducts
 )
-router.get('/similar' ,
-    getSimilarProducts
+router.get('/similar',//Tìm sản phẩm tương tự
+    getSimilarProducts 
 )
 router.get('/:id' ,
     getProductId

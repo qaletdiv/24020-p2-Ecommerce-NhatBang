@@ -1,5 +1,5 @@
 import { imagesList, products } from './products.data.js';
-
+import{ENV} from './config.js'
 //
 const openPopup = document.querySelector(".open-popup");
 const navigationPopup = document.querySelector(".navigation-popup");
@@ -54,7 +54,7 @@ const inputPassword = document.getElementById('password-login');
 
 const buttonLogin = document.querySelector('.button-login');
 
-buttonLogin.addEventListener('click' ,(even) => {
+buttonLogin.addEventListener('click' ,async(even) => {
   even.preventDefault();
   const email = inputEmail.value.trim() ;
   const password = inputPassword.value.trim() ;
@@ -62,24 +62,29 @@ buttonLogin.addEventListener('click' ,(even) => {
     alert('Không được bỏ trống')
     return ;
   }
-  const loadUser = localStorage.getItem('user') ;
-  const user = JSON.parse(loadUser);
-  const confirmUser = user.find(item => {
-    return item.email === email && item.password === password ;
-  })
-  if( !confirmUser) {
-    alert('Email hoặc mật khẩu không đúng');
-    return ;
+  try {
+    const res = await fetch(`${ENV.API_URL}/api/auth/login`,{
+      method : 'POST' ,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify({
+        emailOrPhone :  email ,
+        password
+      })
+    })
+    const data =await res.json() ;
+    if (!res.ok) {
+      alert(data.message); // "Thông tin đăng nhập không chính xác"
+      return;
+    }
+    localStorage.setItem('accessToken' , data.token) ;
+    alert('Đăng nhập thành công')
+    window.location.href = 'index.html'
+  } catch (error) {
+    alert('Lỗi kết nối server');
   }
-  localStorage.setItem('currentUser' , JSON.stringify({
-    email : confirmUser.email ,
-    password:confirmUser.password ,
-    
-    // user : confirmUser ,
-    // isLogin : true ,
-  }))
-  alert('Đăng nhập thành công')
-  window.location.href ='index.html'
+  
 } )
 // hien co bao nhieu san pham tren icon gio hang 
 const cartItems = JSON.parse(localStorage.getItem('cart')) || [];

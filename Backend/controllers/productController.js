@@ -91,10 +91,10 @@ exports.getProductId = async (req, res, next) => {
         next(error);
     }
 }
-exports.getSimilarProducts = async (req, res, next) => {
+exports.getSimilarProducts = async (req, res, next) => { //Tìm sản phẩm tương tự
     try {
-        const { categoryId, excludeId, limit = 3, page = 1 } = req.query;
-
+        const { categoryId, excludeId, limit = 3, page = 1 } = req.query; // excludeId : loại trừ ID
+ 
         const offset = (page - 1) * limit;
 
         const { rows: products, count } = await Product.findAndCountAll({

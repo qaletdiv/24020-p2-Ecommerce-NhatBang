@@ -21,7 +21,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(express.json())
 
 
-app.use('/api/user' , userRouter)
+app.use('/api/auth' , userRouter)
 app.use('/api/category' , categoryRouter) ;
 app.use('/api/product', productRouter) ;
 app.use('/api/cart' ,cartRouter)

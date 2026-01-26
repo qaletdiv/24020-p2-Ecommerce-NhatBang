@@ -107,7 +107,7 @@ function renderProduct(container, products, isAppend = false) {
 let page = 1;
 const limit = 3;
 
-let currentSimilarProducts = []; // Mảng lưu trữ để cộng dồn nếu cần
+
 
 async function fetchProduct(isLoadMore = false) {
   if (!isLoadMore) {
@@ -214,9 +214,9 @@ fetch(`${ENV.API_URL}/api/product/${productID}`)
       return `<option value="${item}">Size ${item}</option>`;
     }).join('');
 
-    let priceHTML = `<p class="price-detail">${productDetail.price.toLocaleString('vi-VN')} VND</p>`;
+    let priceHTML = `<p class="price-detail">${Number(productDetail.price).toLocaleString('vi-VN')} VND</p>`;
     if (productDetail.priceSale > 0 && productDetail.priceSale < productDetail.price) {
-      priceHTML = `<p class="price-detail">${productDetail.priceSale.toLocaleString('vi-VN')} VND</p>`;
+      priceHTML = `<p class="price-detail">${Number(productDetail.price).toLocaleString('vi-VN')} VND</p>`;
     }
 
     detailMain.innerHTML = `
