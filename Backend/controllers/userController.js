@@ -19,12 +19,12 @@ exports.register = async (req, res ,next) => {
             message : "Dang ky thanh cong" ,
             user : userResponse
         })
-    } catch (error) {
-        if(error.name === 'SequelizeUniqueConstraintError') {
+    } catch (errors) {
+        if(errors.name === 'SequelizeUniqueConstraintError') {
             const filed = error.errors[0].path ;
             return res.status(400).json({
                 message : "Loi dang ky" ,
-                error : [
+                errors : [
                     {
                         msg :`${filed} Da ton tai` ,
                         param : filed
@@ -32,7 +32,7 @@ exports.register = async (req, res ,next) => {
                 ]
             })
         }
-        next(error) ;
+        next(errors) ;
     }
 }  ;
 
@@ -54,11 +54,11 @@ exports.login = async(req , res , next) => {
             }
         )
         if(!user) {
-            return res.status(401).json({ message: 'Thong tin dang nhap khong chinh xac' });
+            return res.status(401).json({ message: 'Thông tin đăng nhập không chính xác' });
         }
         const isMath = await bcrypt.compare(password , user.password) // so sang coi thu password co giong nhau
         if(!isMath) {
-         return res.status(401).json({ message: 'Thong tin dang nhap khong chinh xac' });
+            return res.status(401).json({ message: 'Thông tin đăng nhập không chính xác' });
         } ;
         const payload =  {
             userId : user.id 
