@@ -1,5 +1,5 @@
 import { imagesList, products } from './products.data.js';
-import{ENV} from './config.js'
+import { ENV } from './config.js'
 //
 const openPopup = document.querySelector(".open-popup");
 const navigationPopup = document.querySelector(".navigation-popup");
@@ -51,49 +51,78 @@ closeInputFind.addEventListener('blur', () => {
 
 const inputEmail = document.getElementById('email-login');
 const inputPassword = document.getElementById('password-login');
-
 const buttonLogin = document.querySelector('.button-login');
 
-buttonLogin.addEventListener('click' ,async(even) => {
-  even.preventDefault();
-  const email = inputEmail.value.trim() ;
-  const password = inputPassword.value.trim() ;
-  if( email === '' || password === '') {
-    alert('Không được bỏ trống')
-    return ;
+buttonLogin.addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  const email = inputEmail.value.trim();
+  const password = inputPassword.value.trim();
+
+  document.getElementById('email-error').innerText = '';
+  document.getElementById('password-error').innerText = '';
+
+  let hasError = false;
+
+  if (email === '') {
+    document.getElementById('email-error').innerText = 'Không được để trống email hoặc SĐT';
+    hasError = true;
   }
+
+  if (password === '') {
+    document.getElementById('password-error').innerText = 'Không được để trống mật khẩu';
+    hasError = true;
+  } else if (password.length < 6) {
+    document.getElementById('password-error').innerText = 'Mật khẩu tối thiểu 6 ký tự';
+    hasError = true;
+  }
+
+  if (hasError) return;
+
   try {
-    const res = await fetch(`${ENV.API_URL}/api/auth/login`,{
-      method : 'POST' ,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body : JSON.stringify({
-        emailOrPhone :  email ,
+    const res = await fetch(`${ENV.API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        emailOrPhone: email,
         password
       })
-    })
-    const data =await res.json() ;
+    });
+
+    const data = await res.json();
+
     if (!res.ok) {
-      alert(data.message); // "Thông tin đăng nhập không chính xác"
+      document.getElementById('email-error').innerText = '';
+      document.getElementById('password-error').innerText = '';
+
+      if (data.errors && Array.isArray(data.errors)) {
+        data.errors.forEach(err => {
+          if (err.path === 'emailOrPhone')
+            document.getElementById('email-error').innerText = err.msg;
+          if (err.path === 'password')
+            document.getElementById('password-error').innerText = err.msg;
+        });
+      } else {
+        // lỗi sai mật khẩu / sai email
+        document.getElementById('email-error').innerText = data.message || 'Sai Mail hoặc số diện thoại';
+        document.getElementById('password-error').innerText = data.message || 'Sai mật khẩu';
+      }
+
       return;
     }
-    localStorage.setItem('accessToken' , data.token) ;
-    const userSave = {
-      id : data.user.id ,
-      email: data.user.email,
-      fullname: data.user.fullname,
-      phone : data.user.phone ,
-      address : data.user.address ,
-    };
-    localStorage.setItem('currentUser', JSON.stringify(userSave)); 
-    alert('Đăng nhập thành công')
-    window.location.href = 'index.html'
+
+    // chỉ chạy khi đăng nhập thành công
+    localStorage.setItem('accessToken', data.token);
+    localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+    alert('Đăng nhập thành công');
+    window.location.href = 'index.html';
+
   } catch (error) {
     alert('Lỗi kết nối server');
   }
-  
-} )
+});
+
 
 // dang xuat 
 const spanLogOut = document.querySelector('.log-out');
@@ -108,10 +137,10 @@ spanLogOut.addEventListener('click', () => {
 });
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
-buttonMyAccount.addEventListener('click' ,() => {
+buttonMyAccount.addEventListener('click', () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
-    window.location.href ='my-account.html'
+    window.location.href = 'my-account.html'
   }
   else {
     window.location.href = 'register.html'

@@ -94,39 +94,33 @@ buttonRegister.addEventListener('click' ,async (event) => {
       const data = await res.json() ;
 
       if (!res.ok) {
-        // xóa lỗi cũ
+        console.log(data);
         document.getElementById('name-error').innerText = '';
         document.getElementById('email-error').innerText = '';
         document.getElementById('phone-error').innerText = '';
         document.getElementById('address-error').innerText = '';
         document.getElementById('password-error').innerText = '';
 
-        // hiển thị lỗi mới
-        data.errors.forEach(err => {
-          if (err.param === 'fullname') {
-            document.getElementById('name-error').innerText = err.msg;
-          }
-          if (err.param === 'email') {
-            document.getElementById('email-error').innerText = err.msg;
-          }
-          if (err.param === 'phone') {
-            document.getElementById('phone-error').innerText = err.msg;
-          }
-          if (err.param === 'address') {
-            document.getElementById('address-error').innerText = err.msg;
-          }
-          if (err.param === 'password') {
-            document.getElementById('password-error').innerText = err.msg;
-          }
-        });
+        if (data.errors && Array.isArray(data.errors)) {
+          data.errors.forEach(err => {
+            if (err.path === 'fullname') document.getElementById('name-error').innerText = err.msg;
+            if (err.path === 'email') document.getElementById('email-error').innerText = err.msg;
+            if (err.path === 'phone') document.getElementById('phone-error').innerText = err.msg;
+            if (err.path === 'address') document.getElementById('address-error').innerText = err.msg;
+            if (err.path === 'password') document.getElementById('password-error').innerText = err.msg;
+          });
+        } else {
+          alert(data.message || 'Lỗi server');
+        }
 
         return; // không cho chạy tiếp
       }
+      alert('Đăng ký thành công')
+      window.location.href = 'login.html'
     } catch (error) {
       alert('Lỗi kết nối server');
     }
-    alert('Đăng ký thành công')
-    window.location.href ='login.html'
+
 
 })
 //
