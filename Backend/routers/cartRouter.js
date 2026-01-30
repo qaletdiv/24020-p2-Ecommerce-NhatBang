@@ -13,7 +13,7 @@ router.put('/',
     authenticateToken,
     updateCartQuantity
 )
-router.get('/',
+router.get('/', 
     authenticateToken,
     getAllCart
 )
