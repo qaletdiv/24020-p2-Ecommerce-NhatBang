@@ -1,4 +1,5 @@
-const { OrderItem } = require('../models');
+const { or } = require('sequelize');
+const { OrderItem ,Product } = require('../models');
 
 exports.createOrderItem = async (req, res, next) => {
     try {
@@ -17,3 +18,26 @@ exports.createOrderItem = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.getOrderItemsByOrder = async(req , res ,next ) => {
+    try {
+        const {orderId} = req.params ;
+        const item = await OrderItem.findAll({
+            where : {
+                orderId : orderId
+            } ,
+            include : [
+                {
+                    model : Product ,
+                    as: 'product' 
+                }
+            ]
+        })
+        if( !item || item.length === 0) {
+            return res.status(404).json({message : "Khong tim thay don hang nay"})
+        }
+        res.status(200).json(item);
+    } catch (error) {
+        next(error);
+    }
+}
