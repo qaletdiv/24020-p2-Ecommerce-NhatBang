@@ -1,4 +1,5 @@
 import { imagesList } from './products.data.js';
+import { authFetch } from './auth.js';
 import { ENV } from './config.js'
 
 //
@@ -237,6 +238,15 @@ spanLogOut.addEventListener('click', () => {
     window.location.href = 'index.html';
   }
 });
+
+// hết Token thi trang web sẽ tự đăng xuất 
+async function loadCart() {
+  const res = await authFetch(`${ENV.API_URL}/api/cart`);
+  if (!res) return; // token hết hạn thì dừng
+
+  const data = await res.json();
+  // console.log(data); 
+}
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
 buttonMyAccount.addEventListener('click', () => {
@@ -255,3 +265,4 @@ buttonMyAccount.addEventListener('click', () => {
 
 fetchProduct();
 loadCartQuantityIcon()
+loadCart() ;

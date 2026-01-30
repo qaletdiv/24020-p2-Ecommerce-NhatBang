@@ -1,6 +1,5 @@
 create database e_commerce_shopping ; 
-use e_commerce_shopping ;   
-
+use e_commerce_shopping ; 
 -- Nguoi dung 
 create table users (
 	id int primary key auto_increment ,
@@ -49,3 +48,42 @@ create table carts (
     foreign key (productId ) references products(id) 
     
 ) ;
+create table historyOrders (
+	id int primary key  auto_increment ,
+    userId int ,
+    receiverName VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(100),
+    totalPrice decimal(10,2) not null ,
+    orderStatus enum("Đang chờ xử lý" , "Đã giao hàng" ,"Hoàn thành") default "Đang chờ xử lý" ,
+	shippingAddress TEXT NOT NULL,
+    createdAt datetime,
+    updatedAt datetime ,
+    foreign key (userId) references users(id)
+    
+);
+
+
+create table orderItems (
+	id int primary key auto_increment ,
+    orderId int ,
+    productId int ,
+    quantity int not null ,
+    priceAtPurchase decimal(10,2) not null , -- Giá lúc mua (tránh bị thay đổi khi sp đổi giá) 
+    sizeSelected varchar(10) ,
+     createdAt datetime,
+    updatedAt datetime ,
+    foreign key (orderId ) references historyOrders(id) ,
+    foreign key (productId ) references products(id) 
+)
+
+select * from products ;
+
+select * from historyOrders;
+select * from carts ;
+select * from users ;
+DROP TABLE IF EXISTS carts;
+DROP TABLE IF EXISTS historyOrders ;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;

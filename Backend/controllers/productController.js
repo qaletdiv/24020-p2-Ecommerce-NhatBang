@@ -121,7 +121,7 @@ exports.getSimilarProducts = async (req, res, next) => { //Tìm sản phẩm tư
 exports.createProduct = async (req, res, next) => {
     try {
 
-        const { name, description, price, priceSale, imageURL, sizes, tags, categoryId } = req.body;
+        const { name, description, price, priceSale, sizes, tags, categoryId } = req.body;
         const processedImage = req.file ? req.file.processedFileName : null;
 
         const newProduct = await Product.create({

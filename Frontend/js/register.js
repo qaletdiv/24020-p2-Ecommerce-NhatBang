@@ -94,10 +94,10 @@ buttonRegister.addEventListener('click' ,async (event) => {
       const data = await res.json() ;
 
       if (!res.ok) {
-        console.log(data);
+        // console.log(data);
         document.getElementById('name-error').innerText = '';
         document.getElementById('email-error').innerText = '';
-        document.getElementById('phone-error').innerText = '';
+        document.getElementById('phone-error').innerText = '';  
         document.getElementById('address-error').innerText = '';
         document.getElementById('password-error').innerText = '';
 
@@ -110,7 +110,7 @@ buttonRegister.addEventListener('click' ,async (event) => {
             if (err.path === 'password') document.getElementById('password-error').innerText = err.msg;
           });
         } else {
-          alert(data.message || 'Lỗi server');
+          document.getElementById('email-error').innerText = data.errors.msg || 'Email đã tồn tại'
         }
 
         return; // không cho chạy tiếp

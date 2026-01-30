@@ -21,13 +21,13 @@ exports.register = async (req, res ,next) => {
         })
     } catch (errors) {
         if(errors.name === 'SequelizeUniqueConstraintError') {
-            const filed = error.errors[0].path ;
+            const field = errors.errors[0].path ;
             return res.status(400).json({
-                message : "Loi dang ky" ,
+                message : "Lỗi đăng ký" ,
                 errors : [
                     {
-                        msg :`${filed} Da ton tai` ,
-                        param : filed
+                        msg: `${field } đã tồn tại ` ,
+                        path: field 
                     }
                 ]
             })

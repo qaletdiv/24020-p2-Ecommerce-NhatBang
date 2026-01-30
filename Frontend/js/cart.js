@@ -62,7 +62,6 @@ if (!pareUser) {
 /// them san pham vao gio hang
 const getCartApi = async () => {
   const token = localStorage.getItem('accessToken');
-  console.log("TOKEN:", token);   // thêm dòng này
   const res = await fetch(`${ENV.API_URL}/api/cart`, {
     method: 'GET',
     headers: { 'Authorization': `Bearer ${token}` }
