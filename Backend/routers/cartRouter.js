@@ -1,5 +1,5 @@
 const express = require('express');
-const { addToCart, updateCartQuantity, getAllCart , deleteCart } = require('../controllers/cartController');
+const { addToCart, updateCartQuantity, getAllCart , deleteCartById , clearCart } = require('../controllers/cartController');
 const authenticateToken = require('../middlewares/authenticateToken');
 const router = express.Router();
 
@@ -17,6 +17,10 @@ router.get('/',
     authenticateToken,
     getAllCart
 )
-router.delete('/', authenticateToken, deleteCart);
-
+router.delete('/', authenticateToken,
+     deleteCartById);
+router.delete('/clear' ,
+    authenticateToken ,
+    clearCart
+)
 module.exports = router

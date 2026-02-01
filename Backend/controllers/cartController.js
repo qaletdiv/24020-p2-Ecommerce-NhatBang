@@ -1,3 +1,4 @@
+const { json } = require('sequelize');
 const { Cart, User, Product } = require('../models');
 exports.addToCart = async (req, res, next) => {
     try {
@@ -86,7 +87,7 @@ exports.getAllCart = async (req, res, next) => {
     }
 }
 
-exports.deleteCart = async ( req , res , next) => {
+exports.deleteCartById = async ( req , res , next) => {
     try {
         const {productId , sizeSelected} = req.body ;
         const userId = req.user.userId ;
@@ -112,4 +113,21 @@ exports.deleteCart = async ( req , res , next) => {
     } catch (error) {
             next(error) ;
     }
-}
+} ;
+
+exports.clearCart = async (req, res, next) => {
+    try {
+        const userId = req.user.userId || req.user.id;
+
+        const deletedRows = await Cart.destroy({
+            where: { userId }
+        });
+
+        res.status(200).json({
+            message: 'Da xoa toan bo gio hang',
+            deletedRows
+        });
+    } catch (error) {
+        next(error);
+    }
+};
