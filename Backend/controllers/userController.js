@@ -14,6 +14,7 @@ exports.register = async (req, res ,next) => {
             phone ,
             password : hashedPassword
         }) ;
+        
         const userResponse = await User.findByPk(newUser.id)
         res.status(201).json({
             message : "Dang ky thanh cong" ,

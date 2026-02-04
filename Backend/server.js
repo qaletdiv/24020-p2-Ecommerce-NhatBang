@@ -14,7 +14,8 @@ const historyRouter = require('./routers/historyOrderRouter')
 const orderItemRouter = require('./routers/orderItemRouter');
 const db = require('./models') ;
 
-const POST = 3000 ;
+const PORT = process.env.PORT || 3000;
+
 
 // bật CORS cho frontend HTML/JS thuần
 app.use(cors());
@@ -38,6 +39,6 @@ db.sequelize.authenticate()
 .catch((error) => {
     console.log('ket noi database that bai' , error)
 })
-app.listen(POST ,() => {
-    console.log(`Su kien lang nghe tai http://localhost:${POST}`)
+app.listen(PORT ,() => {
+    console.log(`Su kien lang nghe tai http://localhost:${PORT}`)
 })
