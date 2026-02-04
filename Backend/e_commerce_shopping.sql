@@ -71,7 +71,7 @@ create table orderItems (
     quantity int not null ,
     priceAtPurchase decimal(10,2) not null , -- Giá lúc mua (tránh bị thay đổi khi sp đổi giá) 
     sizeSelected varchar(10) ,
-     createdAt datetime,
+    createdAt datetime,
     updatedAt datetime ,
     foreign key (orderId ) references historyOrders(id) ,
     foreign key (productId ) references products(id) 

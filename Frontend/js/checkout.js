@@ -164,7 +164,7 @@ buttonSubmit.addEventListener('click', async (event) => {
     const dataOrder = await resOrder.json();
     const orderId = dataOrder.orderId;
 
-
+    localStorage.setItem("orderId", orderId);
     const orderItemPromises = currentCart.map(item => {
       const product = item.product;
       const priceAtPurchase =
