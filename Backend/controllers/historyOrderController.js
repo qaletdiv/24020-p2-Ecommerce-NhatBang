@@ -1,4 +1,4 @@
-    const {HistoryOrder ,User , OrderItem} = require('../models')
+    const {HistoryOrder ,User ,Product, OrderItem} = require('../models')
 
 exports.createHistoryOrder = async (req, res, next) => {
     try {
@@ -51,19 +51,46 @@ exports.updateHistoryOrder = async(req , res , next) => {
 
 exports.getAllHistoryOrder = async(req , res , next) => {
     try {
-        const { totalPrice, receiverName, phone, email, orderStatus, shippingAddress } = req.query ;
+     
         const getAllHistoryOrder = await HistoryOrder.findAll({
             include : [
                 {
                     model: OrderItem , 
-                    as: 'orderItems'
-                }
+                    as: 'orderItems',
+                    include: [{ model: Product, as: "product" }]
+                },
+                
             ]
         })
-        res.json({
+        res.json(
             getAllHistoryOrder
-        })
+        )
     } catch (error) {
         next(error)
     }
 }
+
+exports.getHistoryOrderById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const order = await HistoryOrder.findOne({
+            where: { id: Number(id) },
+            include: [
+                {
+                    model: OrderItem,
+                    as: "orderItems",
+                    include: [{ model: Product, as: "product" }],
+                },
+            ],
+        });
+
+        if (!order) {
+            return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+        }
+
+        res.json(order);
+    } catch (error) {
+        next(error);
+    }
+};

@@ -1,3 +1,5 @@
+import { ENV } from './config.js';
+
 const openPopup = document.querySelector(".open-popup");
 const navigationPopup = document.querySelector(".navigation-popup");
 const closePopup = document.querySelector(".delete-navigation");
@@ -43,48 +45,72 @@ const closeInputFind = document.querySelector('.input-find');
 closeInputFind.addEventListener('blur', () => {
   closeInputFind.classList.add('hidden')
 });
+async function fetchMyOrders() {
+  const token = localStorage.getItem("accessToken");
 
-const orderConfirmation = localStorage.getItem('checkoutForm');
-const orderParse = orderConfirmation ? JSON.parse(orderConfirmation) : [];
-const currentUser = localStorage.getItem('currentUser');
-const currentUserParse = JSON.parse(currentUser);
-const order = orderParse.filter(item => {
-  return item.emailCurrentUser === currentUserParse.email ;
-});
+  const orderId = localStorage.getItem("orderId");
 
-const sectionOrder = document.querySelector('.section-order');
+  const res = await fetch(`${ENV.API_URL}/api/historyOrder/${orderId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-order.forEach(item => {
-  item.product.forEach(prod => {
-    const divEl = document.createElement('div');
-    divEl.classList.add('div-ordor-page');
-    const price = prod.price.replace(/[^\d]/g, '');
+  if (!res.ok) throw new Error("Không lấy được đơn hàng");
 
-    const totalPrice = Number(prod.quantity) * Number(price);
-    divEl.innerHTML = `
+  return await res.json();
+}
+
+
+const sectionOrder = document.querySelector(".section-order");
+
+async function renderOrders() {
+  try {
+    const order = await fetchMyOrders();
+
+    // sectionOrder.innerHTML = "";
+
+    order.orderItems.forEach(item => {
+      const divEl = document.createElement("div");
+      divEl.classList.add("div-order-page");
+
+      const product = item.product;
+      const price = Number(item.priceAtPurchase || 0);
+      const totalPrice = Number(item.quantity || 0) * price;
+
+      divEl.innerHTML = `
         <div class="div-confirmation-img">
-            <img src="${prod.img}" alt="">
-            <h2>${prod.name}</h2>
+          <img src="${ENV.API_URL}/uploads/${product.imageURL}" alt="">
+          <h2>${product.name}</h2>
         </div>
         <div class="div-confirmation-quantity">
-            <span>x ${prod.quantity}</span>
+          <span>x ${item.quantity}</span>
         </div>
         <div class="div-confirmation-price">
-            <span>${totalPrice.toLocaleString('vi-VN')} đ</span>
+          <span>${totalPrice.toLocaleString("vi-VN")} đ</span>
         </div>
       `;
-    sectionOrder.appendChild(divEl);
-  });
-});
 
-order.forEach(item => {
-  if (item.total) {
-    const divTotalPrice = document.createElement('div');
-    divTotalPrice.classList.add('total-price');
-    divTotalPrice.innerHTML = `<span>Tổng tiền thanh toán : ${item.total}</span>`;
+      sectionOrder.appendChild(divEl);
+    });
+
+    const divTotalPrice = document.createElement("div");
+    divTotalPrice.classList.add("total-price");
+    divTotalPrice.innerHTML = `
+      <span>Tổng tiền thanh toán : ${Number(order.totalPrice).toLocaleString("vi-VN")} đ</span>
+    `;
     sectionOrder.appendChild(divTotalPrice);
+
+  } catch (err) {
+    console.log(err);
+    sectionOrder.innerHTML = `<p>Lỗi load đơn hàng</p>`;
   }
-});
+}
+
+
+
 
 
 /// tiep tuc 
@@ -131,3 +157,5 @@ inputFind.addEventListener('keydown', (event) => {
     }
   }
 });
+
+renderOrders();
