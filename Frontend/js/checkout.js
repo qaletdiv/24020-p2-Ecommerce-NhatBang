@@ -209,7 +209,7 @@ spanLogOut.addEventListener('click', () => {
   const result = confirm("Bạn chắc chắn muốn đăng xuất không");
   if (result) {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('currentToken');
+    localStorage.removeItem('currentUser');
     window.location.href = 'index.html';
   }
 });

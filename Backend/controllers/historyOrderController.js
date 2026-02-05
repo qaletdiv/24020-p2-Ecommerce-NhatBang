@@ -51,8 +51,9 @@ exports.updateHistoryOrder = async(req , res , next) => {
 
 exports.getAllHistoryOrder = async(req , res , next) => {
     try {
-     
+        const userId = req.user.userId || req.user.id;
         const getAllHistoryOrder = await HistoryOrder.findAll({
+            where: { userId },
             include : [
                 {
                     model: OrderItem , 

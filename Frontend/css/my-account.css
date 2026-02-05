@@ -2,7 +2,7 @@
     margin-top: 10rem;
 }
 .container {
-    margin-bottom: 10rem;
+    margin-bottom: 2rem;
 }
 .h2-account {
     display: flex;
@@ -14,7 +14,7 @@
     width: 110rem;
     margin: 0px auto;
     margin-top: 10rem;
-    margin-bottom: 5rem;
+    margin-bottom: 10rem;
     gap: 1rem;
 }
 
@@ -55,8 +55,9 @@
 td {
     padding: 1rem;
     border: 1px solid #ccc;
-    word-break: break-word;
-    /* Giúp ngắt dòng nếu nội dung quá dài */
+    word-break: break-word;/* Giúp ngắt dòng nếu nội dung quá dài */
+    text-align: center;/* ✅ căn giữa ngang */
+    vertical-align: middle;/* ✅ căn giữa dọc */
 }
 
 .delete-account {

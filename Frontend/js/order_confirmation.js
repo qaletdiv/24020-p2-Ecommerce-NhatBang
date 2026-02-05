@@ -133,15 +133,17 @@ const spanLogOut = document.querySelector('.log-out');
 spanLogOut.addEventListener('click', () => {
   const result = confirm("Bạn chắc chắn muốn đăng xuất không");
   if (result) {
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('currentUser');
     window.location.href = 'index.html';
   }
 });
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
-buttonMyAccount.addEventListener('click' ,() => {
-  if(currentUserParse) {
-    window.location.href ='my-account.html'
+buttonMyAccount.addEventListener('click', () => {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    window.location.href = 'my-account.html'
   }
   else {
     window.location.href = 'register.html'
