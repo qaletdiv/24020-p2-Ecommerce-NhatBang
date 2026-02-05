@@ -115,7 +115,7 @@ async function fetchProduct(isLoadMore = false) {
     productShirtSame.innerHTML = "";
   }
 
-  const url = `${ENV.API_URL}/api/product/similar?categoryId=${currentCategoryId}&excludeId=${productID}&limit=${limit}&page=${page}`;
+  const url = `${ENV.API_URL}/api/products/similar?categoryId=${currentCategoryId}&excludeId=${productID}&limit=${limit}&page=${page}`;
 
   try {
     const res = await fetch(url);
@@ -194,10 +194,10 @@ buttonMyAccount.addEventListener('click', () => {
 const inputFind = document.querySelector('.input-find');
 inputFind.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-    const searchText = inputFind.value.trim().toLowerCase();
+    const searchText = inputFind.value.trim();
     if (searchText !== '') {
-      localStorage.setItem('searchKey', searchText); // lưu từ khóa
-      window.location.href = 'find_product.html';      // chuyển trang
+      window.location.href = `products.html?search=${encodeURIComponent(searchText)}`;
+
     }
   }
 });
@@ -206,7 +206,7 @@ const params = new URLSearchParams(window.location.search);
 const productID = params.get('id');
 let currentCategoryId = null;
 
-fetch(`${ENV.API_URL}/api/product/${productID}`)
+fetch(`${ENV.API_URL}/api/products/${productID}`)
   .then(res => res.json())
   .then(productDetail => {
 

@@ -264,12 +264,11 @@ buttonMyAccount.addEventListener('click', () => {
 const inputFind = document.querySelector('.input-find');
 inputFind.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-    const searchText = inputFind.value.trim().toLowerCase();
+    const searchText = inputFind.value.trim();
     if (searchText !== '') {
-      localStorage.setItem('searchKey', searchText); // lưu từ khóa
-      window.location.href = 'find_product.html';      // chuyển trang
+      window.location.href = `products.html?search=${encodeURIComponent(searchText)}`;
+
     }
   }
 });
-
 initCartPage();

@@ -1,4 +1,4 @@
-const { Product, Category, Sequelize } = require('../models');
+const { Product, Category, Sequelize, sequelize } = require('../models');
 const path = require('path');
 const fs = require('fs');
 const { Op } = require('sequelize')
@@ -16,39 +16,63 @@ const categoryMap = {
     't-shirt': 4
 }
 
-function buildWhere(price, category, highlight) {
+function buildWhere(price, category, highlight, search) {
     let where = {};
+
+
     if (categoryMap[category]) {
         where.categoryId = categoryMap[category];
     }
-    if (highlight === 'true') {
-        where.tags = { [Op.like]: ['%noi bat%'] }
+
+   
+    where[Op.and] = [];
+
+    if (highlight === "true") {
+        where[Op.and].push(
+            sequelize.where(
+                sequelize.fn("JSON_CONTAINS", sequelize.col("tags"), JSON.stringify("noi bat")),
+                1
+            )
+        );
     }
+
+    if (search && search.trim() !== "") {
+        where.name = {
+            [Op.like]: `%${search.trim()}%`
+        };
+    }
+
+    // nếu không có điều kiện AND thì xóa đi cho sạch
+    if (where[Op.and].length === 0) {
+        delete where[Op.and];
+    }
+
+
     if (priceRanges[price]) {
         const [min, max] = priceRanges[price];
         where[Op.or] = [
-            // Trường hợp không sale: dùng price
             {
                 [Op.and]: [
                     { priceSale: 0 },
-                    { price: max ? { [Op.between]: [min, max] } : { [Op.gt]: min } }
+                    { price: { [Op.between]: [min, max] } }
                 ]
             },
-            // Trường hợp có sale: dùng priceSale
             {
                 [Op.and]: [
                     { priceSale: { [Op.gt]: 0 } },
-                    { priceSale: max ? { [Op.between]: [min, max] } : { [Op.gt]: min } }
+                    { priceSale: { [Op.between]: [min, max] } }
                 ]
             }
         ];
     }
+
     return where;
 }
+
 exports.getAllProducts = async (req, res, next) => {
     try {
-        const { category, price, highlight, page = 1, limit = 5 } = req.query;
-        const where = buildWhere(price, category, highlight);
+        const { category, price,search, highlight, page = 1, limit = 5 } = req.query;
+        const where = buildWhere(price, category, highlight ,search);
         const offset = (page - 1) * limit;
         const { rows, count } = await Product.findAndCountAll({
             where,

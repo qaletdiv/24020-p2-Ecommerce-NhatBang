@@ -170,7 +170,7 @@ const limit = 3;
 
 
 async function fetchProduct() {
-  const res = await fetch(`${ENV.API_URL}/api/product?highlight=true&page=${page}&limit=${limit}`);
+  const res = await fetch(`${ENV.API_URL}/api/products?highlight=true&page=${page}&limit=${limit}`);
   const result = await res.json();
 
   const products = result.products;
@@ -195,13 +195,14 @@ loadMoreBtn.addEventListener("click", () => {
 const inputFind = document.querySelector('.input-find');
 inputFind.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-    const searchText = inputFind.value.trim().toLowerCase();
+    const searchText = inputFind.value.trim();
     if (searchText !== '') {
-      localStorage.setItem('searchKey', searchText); // lưu từ khóa
-      window.location.href = 'find_product.html';      // chuyển trang
+      window.location.href = `products.html?search=${encodeURIComponent(searchText)}`;
+
     }
   }
 });
+
 
 const  loadCartQuantityIcon= async() => {
   const token = localStorage.getItem('accessToken');

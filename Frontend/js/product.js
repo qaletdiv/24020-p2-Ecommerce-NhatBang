@@ -45,8 +45,9 @@ const closeInputFind = document.querySelector('.input-find');
 
 closeInputFind.addEventListener('blur', () => {
   closeInputFind.classList.add('hidden');
-  closeInputFind.value = '';
+  // closeInputFind.value = '';
 });
+
 
 
 
@@ -103,19 +104,23 @@ function renderProduct(container, products) {
   });
 }
 let currentCategory = 'all';
-let currentPrice = 'all'
+let currentPrice = 'all';
+let currentSearch = '';
 let page = 1;
 const limit = 4;
 
 
 async function fetchProduct() {
-  let url = `${ENV.API_URL}/api/product?page=${page}&limit=${limit}`;
+  let url = `${ENV.API_URL}/api/products?page=${page}&limit=${limit}`;
 
   if (currentCategory !== 'all') {
     url += `&category=${currentCategory}`;
   }
   if (currentPrice !== 'all') {
     url += `&price=${currentPrice}`
+  }
+  if (currentSearch && currentSearch.trim() !== "") {
+    url += `&search=${encodeURIComponent(currentSearch.trim())}`;
   }
 
   const res = await fetch(url);
@@ -142,53 +147,42 @@ loadMoreBtn.addEventListener("click", () => {
 
 const selectDrop = document.querySelector('#select-drop')
 // clik change loc Danh muc 
-selectDrop.addEventListener("change", async() => {
+selectDrop.addEventListener("change", async () => {
   currentCategory = selectDrop.value;
-  page = 1 ;
-  productMainShirtPage.innerHTML = '' ;
+  page = 1;
+  productMainShirtPage.innerHTML = '';
   fetchProduct()
 });
 
 // click loc gia san pham 
 
 const priceFilter = document.getElementById('price-filter');
-priceFilter.addEventListener('change',async () => {
+priceFilter.addEventListener('change', async () => {
   currentPrice = priceFilter.value;
-  page = 1 ;
-  productMainShirtPage.innerHTML = '' ;
+  page = 1;
+  productMainShirtPage.innerHTML = '';
   fetchProduct()
 
 })
 
 
-// 
-const inputDrop = document.querySelector('.input-drop');
 
-inputDrop.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    const searchText = inputDrop.value.trim().toLowerCase();
-    const inputNameDrop = products.filter(item =>
-      item.name.toLowerCase().includes(searchText)
-    );
-    renderProductList(productMainShirtPage, inputNameDrop);
-    loadMoreBtn.classList.add('hidden');
-  }
-});
-
-// inputDrop.addEventListener('blur', () => {
-//   inputDrop.value ='';
-// });
-//
 const inputFind = document.querySelector('.input-find');
 inputFind.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-    const searchText = inputFind.value.trim().toLowerCase();
-    if (searchText !== '') {
-      localStorage.setItem('searchKey', searchText); // lưu từ khóa
-      window.location.href = 'find_product.html';      // chuyển trang
-    }
+    currentSearch = inputFind.value.trim();
+    page = 1;
+    productMainShirtPage.innerHTML = '';
+    fetchProduct();
   }
 });
+const params = new URLSearchParams(window.location.search);
+const searchFromUrl = params.get("search");
+
+if (searchFromUrl && searchFromUrl.trim() !== "") {
+  currentSearch = searchFromUrl.trim();  // gán search vào biến
+  inputFind.value = currentSearch;       // hiện lên input
+}
 
 
 
@@ -220,6 +214,7 @@ priceTang.addEventListener('click', () => {
   renderProductList(productMainShirtPage, priceTangDan);
   loadMoreBtn.classList.add('hidden')
 })
+
 
 //
 // hien co bao nhieu san pham tren icon gio hang 
