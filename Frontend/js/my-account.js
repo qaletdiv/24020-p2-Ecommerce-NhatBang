@@ -1,4 +1,4 @@
-import { user } from './products.data.js';
+
 import { ENV } from './config.js';
 
 //
@@ -47,7 +47,9 @@ const closeInputFind = document.querySelector('.input-find');
 closeInputFind.addEventListener('blur', () => {
     closeInputFind.classList.add('hidden')
 });
-const historyOrder = JSON.parse(localStorage.getItem('historyOrder')) || [];
+
+
+
 
 // kiểm tra đăng nhập
 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -56,13 +58,10 @@ if (!currentUser) {
     window.location.href = 'login.html';
 }
 
-// lọc đơn hàng theo email user đang login
-const infoUsers = historyOrder.filter(item => {
-    return item.emailCurrentUser === currentUser.email;
-});
 
 // hiển thị thông tin user
 const infoContainer = document.querySelector('.container');
+
 const divUserMail = document.createElement('div');
 divUserMail.classList.add('div-user-mail');
 divUserMail.innerHTML = `
@@ -71,25 +70,67 @@ divUserMail.innerHTML = `
 `;
 infoContainer.appendChild(divUserMail);
 
-// hiển thị lịch sử đơn hàng
-infoUsers.forEach(order => {
-    const divElMyAccount = document.createElement('div');
-    divElMyAccount.classList.add('div-my-account');
-    divElMyAccount.innerHTML = `
-        <div class="orders">
-            <h3>Lịch sử đặt hàng</h3>
-            <table>
-                <tr>
-                    <td>${order.id}</td>    
-                    <td>${new Date(order.date).toLocaleString('vi-VN')}</td>
-                    <td>${order.total}</td>
-                    <td>Đã xác nhận</td>
-                </tr>
-            </table>
-        </div>
-    `;
-    infoContainer.appendChild(divElMyAccount);
-});
+
+
+// hien thi don hang 
+const renderOrders = async(orders) => {
+    orders.forEach(order => {
+        const divElMyAccount = document.createElement('div');
+            divElMyAccount.classList.add('div-my-account');
+        divElMyAccount.innerHTML = `
+            <div class="orders">
+                <h3>Lịch sử đặt hàng</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>email</th>
+                            <th>Số điện thoại</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            </tr>
+                    </thead>
+                    <tbody id="orderHistory">
+                        <tr>
+                        <td>${order.id}</td>
+                        <td>${new Date(order.createdAt).toLocaleString('vi-VN')}</td>
+                        <td>${order.email}</td>
+                        <td>${Number(order.phone)}</td>
+                        <td>${Number(order.totalPrice).toLocaleString('vi-VN')} đ</td>
+                        <td>${order.orderStatus}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+            infoContainer.appendChild(divElMyAccount);
+    })
+}
+const initMyOrder = async () => {
+    try {
+        const historyOrder = await fetchMyOrders();
+
+        renderOrders(historyOrder);
+    } catch (error) {
+        console.log(error);
+        alert(error.message);
+    }
+};
+const fetchMyOrders = async() => {
+    const token = localStorage.getItem('accessToken')  ;
+    const res = await fetch(`${ENV.API_URL}/api/historyOrder/`,{
+        method :'GET' ,
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    if (!res.ok) throw new Error("Không lấy được đơn hàng");
+
+    return await res.json();
+}
+
 
 
 const loadCartQuantityIcon = async () => {
@@ -132,7 +173,8 @@ spanLogOut.addEventListener('click', () => {
 // chuyen account
 const buttonMyAccount = document.querySelector('.btn-my-account');
 buttonMyAccount.addEventListener('click', () => {
-    if (parseUser) {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
         window.location.href = 'my-account.html'
     }
     else {
@@ -149,4 +191,5 @@ inputFind.addEventListener('keydown', (event) => {
         }
     }
 });
-loadCartQuantityIcon()
+loadCartQuantityIcon() ;
+initMyOrder() ;
