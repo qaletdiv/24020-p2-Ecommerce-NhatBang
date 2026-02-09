@@ -106,6 +106,7 @@ function renderProduct(container, products) {
 let currentCategory = 'all';
 let currentPrice = 'all';
 let currentSearch = '';
+let currentSort = ''
 let page = 1;
 const limit = 4;
 
@@ -121,6 +122,9 @@ async function fetchProduct() {
   }
   if (currentSearch && currentSearch.trim() !== "") {
     url += `&search=${encodeURIComponent(currentSearch.trim())}`;
+  }
+  if(currentSort) {
+    url += `&sort=${currentSort}` ;
   }
 
   const res = await fetch(url);
@@ -188,31 +192,25 @@ if (searchFromUrl && searchFromUrl.trim() !== "") {
 
 
 
+
 // gia giam dan 
 
 const priceGiam = document.querySelector('.price-giam');
 
 priceGiam.addEventListener('click', () => {
-  const priceGiamDan = [...products].sort((a, b) => {
-    const priceA = a.priceSale || a.price;
-    const priceB = b.priceSale || b.price;
-    return priceB - priceA;
-  });
-
-  renderProductList(productMainShirtPage, priceGiamDan);
-  loadMoreBtn.classList.add('hidden')
+  currentSort = "desc" ;
+  page = 1 ;
+  productMainShirtPage.innerHTML = '' ;
+  fetchProduct() ;
 });
 
 // gia tang dan 
 const priceTang = document.querySelector('.price-tang');
 priceTang.addEventListener('click', () => {
-  const priceTangDan = [...products].sort((a, b) => {
-    const priceA = a.priceSale || a.price;
-    const priceB = b.priceSale || b.price;
-    return priceA - priceB;
-  })
-  renderProductList(productMainShirtPage, priceTangDan);
-  loadMoreBtn.classList.add('hidden')
+  currentSort = 'asc' ;
+  page = 1 ;
+  productMainShirtPage.innerHTML = '' ;
+  fetchProduct() ;
 })
 
 
