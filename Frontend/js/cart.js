@@ -137,13 +137,14 @@ const renderCartUI = (cartItem) => {
   cartItem.forEach(item => {
     const product = item.product;
     const subTotal = item.quantity * product.price;
+    const img = product.images?.[0]?.imageUrl || "";
     totalAll += subTotal;
     totalQuantity += item.quantity;
     const divEl = document.createElement('div');
     divEl.innerHTML = `
         <div class="content-cart-page" data-id="${item.productId}" data-size="${item.sizeSelected}">
             <div class="content-item img-cart">
-               <img src="${ENV.API_URL}/uploads/${product.imageURL}" alt="">
+                <img src="${ENV.API_URL}/uploads/${img}" alt="">
                 <div class="content-cart-product">
                     <p>Mã: ${item.productId}, Size: ${item.sizeSelected}</p>
                     <h1>${product.name}</h1>

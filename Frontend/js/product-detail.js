@@ -84,7 +84,12 @@ function renderProduct(container, products, isAppend = false) {
       `;
     }
 
-    const outSandHTML = `<img src="${ENV.API_URL}/uploads/${item.imageURL}" alt="${item.name}">`;
+    let firstImage = "";
+    if (item.images && item.images.length > 0) {
+      firstImage = item.images[0].imageUrl;
+    }
+
+    const outSandHTML = `<img src="${ENV.API_URL}/uploads/${firstImage}" alt="${item.name}">`;
 
     divEl.innerHTML = `
       <div class="img_hidden">
@@ -222,11 +227,13 @@ fetch(`${ENV.API_URL}/api/products/${productID}`)
     if (productDetail.priceSale > 0 && productDetail.priceSale < productDetail.price) {
       priceHTML = `<p class="price-detail">${Number(productDetail.price).toLocaleString('vi-VN')} VND</p>`;
     }
-
+    let firstImageDetail = "";
+    if (productDetail.images && productDetail.images.length > 0) {
+      firstImageDetail = productDetail.images[0].imageUrl;
+    }
     detailMain.innerHTML = `
       <div class="img-detail">
-          <img src="${ENV.API_URL}/uploads/${productDetail.imageURL}" alt="">
-
+         <img src="${ENV.API_URL}/uploads/${firstImageDetail}" alt="">
           <div class="product_overlay_detail"></div>
       </div>
       <div class="content-product">

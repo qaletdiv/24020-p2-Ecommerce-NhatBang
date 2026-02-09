@@ -1,4 +1,4 @@
-    const {HistoryOrder ,User ,Product, OrderItem} = require('../models')
+    const {HistoryOrder ,User ,Product, OrderItem ,Product_Image} = require('../models')
 
 exports.createHistoryOrder = async (req, res, next) => {
     try {
@@ -49,27 +49,40 @@ exports.updateHistoryOrder = async(req , res , next) => {
     }
 }
 
-exports.getAllHistoryOrder = async(req , res , next) => {
+exports.getAllHistoryOrder = async (req, res, next) => {
     try {
         const userId = req.user.userId || req.user.id;
+
         const getAllHistoryOrder = await HistoryOrder.findAll({
             where: { userId },
-            include : [
+            include: [
                 {
-                    model: OrderItem , 
-                    as: 'orderItems',
-                    include: [{ model: Product, as: "product" }]
+                    model: OrderItem,
+                    as: "orderItems",
+                    include: [
+                        {
+                            model: Product,
+                            as: "product",
+                            attributes: ["id", "name", "price", "priceSale"],
+                            include: [
+                                {
+                                    model: Product_Image,
+                                    as: "images",
+                                    attributes: ["id", "imageUrl"],
+                                },
+                            ],
+                        },
+                    ],
                 },
-                
-            ]
-        })
-        res.json(
-            getAllHistoryOrder
-        )
+            ],
+        });
+
+        res.json(getAllHistoryOrder);
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
+
 
 exports.getHistoryOrderById = async (req, res, next) => {
     try {
@@ -81,7 +94,20 @@ exports.getHistoryOrderById = async (req, res, next) => {
                 {
                     model: OrderItem,
                     as: "orderItems",
-                    include: [{ model: Product, as: "product" }],
+                    include: [
+                        {
+                            model: Product,
+                            as: "product",
+                            attributes: ["id", "name", "price", "priceSale"],
+                            include: [
+                                {
+                                    model: Product_Image,
+                                    as: "images",
+                                    attributes: ["id", "imageUrl"],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         });

@@ -79,10 +79,11 @@ async function renderOrders() {
       const product = item.product;
       const price = Number(item.priceAtPurchase || 0);
       const totalPrice = Number(item.quantity || 0) * price;
+      const img = product.images?.[0]?.imageUrl || "";
 
       divEl.innerHTML = `
         <div class="div-confirmation-img">
-          <img src="${ENV.API_URL}/uploads/${product.imageURL}" alt="">
+          <img src="${ENV.API_URL}/uploads/${img}" alt="">
           <h2>${product.name}</h2>
         </div>
         <div class="div-confirmation-quantity">

@@ -144,8 +144,8 @@ function renderProduct(container, products) {
         <p class="sale-m">${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
       `;
     }
-
-    const outSandHTML = `<img src="${ENV.API_URL}/uploads/${item.imageURL}" alt="${item.name}">`;
+    const firstImage = item.images?.[0]?.imageUrl;
+    const outSandHTML = `<img src="${ENV.API_URL}/uploads/${firstImage}" alt="${item.name}">`;
 
     divEl.innerHTML = `
       <div class="img_hidden">

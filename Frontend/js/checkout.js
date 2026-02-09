@@ -67,13 +67,14 @@ async function loadCartCheckout() {
   currentCart.forEach(item => {
     const product = item.product;
     const subTotal = item.quantity * product.price;
+    const img = product.images?.[0]?.imageUrl || "";
     totalAll += subTotal;
 
     const divCartCheckout = document.createElement('div');
     divCartCheckout.classList.add('cart-checkout-page');
     divCartCheckout.innerHTML = `
         <div class="cart-page-check">
-          <img class="img-cart-checkout" src="${ENV.API_URL}/uploads/${product.imageURL}" alt="">
+          <img class="img-cart-checkout" src="${ENV.API_URL}/uploads/${img}" alt="">
           <div class="content-checkout">
             <div class="content-size-quantity">
               <p class="checkout-size">Size: ${item.sizeSelected}</p>

@@ -1,5 +1,5 @@
 const { json } = require('sequelize');
-const { Cart, User, Product } = require('../models');
+const { Cart, User, Product  ,Product_Image} = require('../models');
 exports.addToCart = async (req, res, next) => {
     try {
         const userId = req.user.userId || req.user.id;
@@ -72,20 +72,33 @@ exports.updateCartQuantity = async (req, res, next) => {
 };
 exports.getAllCart = async (req, res, next) => {
     try {
-        const userId = req.user.userId; // lấy từ token
+        const userId = req.user.userId || req.user.id;
+
         const getAllCart = await Cart.findAll({
-            where: { userId },   // lọc theo user
-            include: [{
-                model: Product,
-                as: 'product',
-                attributes: ['name', 'price', 'imageURL']
-            }]
+            where: { userId },
+            include: [
+                {
+                    model: Product,
+                    as: 'product',
+                    attributes: ['id', 'name', 'price', 'priceSale'],
+                    include: [
+                        {
+                            model: Product_Image,
+                            as: 'images',
+                            attributes: ['id', 'imageUrl']
+                        }
+                    ]
+                }
+            ]
         });
-        res.json(getAllCart)
+
+        res.json(getAllCart);
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
+
+
 
 exports.deleteCartById = async ( req , res , next) => {
     try {
@@ -93,9 +106,9 @@ exports.deleteCartById = async ( req , res , next) => {
         const userId = req.user.userId ;
         const deleteRows = await Cart.destroy({
             where : {
-                userId : userId ,
-                productId : productId ,
-                sizeSelected :sizeSelected 
+                userId: Number(userId),
+                productId: Number(productId),
+                sizeSelected: String(sizeSelected).trim()
             }
         });
         if( deleteRows === 0) {

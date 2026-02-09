@@ -27,7 +27,6 @@ create table products (
     description text ,
 	sizes json ,
     tags json ,
-    imageURL varchar(255) ,
     categoryId int ,
     foreign key (categoryId ) references categories(id)
 ) ;

@@ -12,6 +12,7 @@ const productRouter = require('./routers/productRouter') ;
 const cartRouter = require('./routers/cartRouter') ;
 const historyRouter = require('./routers/historyOrderRouter')
 const orderItemRouter = require('./routers/orderItemRouter');
+const ProductImageRouter = require('./routers/productImageRouter')
 const db = require('./models') ;
 
 const PORT = process.env.PORT || 3000;
@@ -26,11 +27,13 @@ app.use(express.json())
 
 
 app.use('/api/auth' , userRouter)
+app.use('/api/product_image' , ProductImageRouter)
 app.use('/api/category' , categoryRouter) ;
 app.use('/api/products', productRouter) ;
 app.use('/api/cart' ,cartRouter) ;
 app.use('/api/historyOrder' , historyRouter) ;
-app.use('/api/orderItem' , orderItemRouter)
+app.use('/api/orderItem' , orderItemRouter) ;
+
 app.use(errorHandlerMiddleware)
 db.sequelize.authenticate()
 .then(() => {

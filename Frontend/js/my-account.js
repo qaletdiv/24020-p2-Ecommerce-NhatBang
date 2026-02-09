@@ -85,6 +85,7 @@ const renderOrders = async(orders) => {
                         <tr>
                             <th>Mã đơn hàng</th>
                             <th>Ngày đặt</th>
+                            <th>Tên </th>
                             <th>email</th>
                             <th>Số điện thoại</th>
                             <th>Tổng tiền</th>
@@ -95,6 +96,7 @@ const renderOrders = async(orders) => {
                         <tr>
                         <td>${order.id}</td>
                         <td>${new Date(order.createdAt).toLocaleString('vi-VN')}</td>
+                        <td>${order.receiverName}</td>
                         <td>${order.email}</td>
                         <td>${Number(order.phone)}</td>
                         <td>${Number(order.totalPrice).toLocaleString('vi-VN')} đ</td>

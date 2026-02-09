@@ -84,7 +84,8 @@ function renderProduct(container, products) {
       `;
     }
 
-    const outSandHTML = `<img src="http://localhost:3000/uploads/${item.imageURL}" alt="${item.name}">`;
+    const firstImage = item.images?.[0]?.imageUrl;
+    const outSandHTML = `<img src="${ENV.API_URL}/uploads/${firstImage}" alt="${item.name}">`;
 
     divEl.innerHTML = `
       <div class="img_hidden">

@@ -39,9 +39,7 @@ module.exports = (sequelize ,DataTypes) => {
                 type: DataTypes.DECIMAL(10, 2),
                 defaultValue: 0,
             },
-            imageURL: {
-                type: DataTypes.STRING,
-            },
+          
             sizes: {
                 type: DataTypes.JSON, 
             },
