@@ -27,18 +27,18 @@ imgBannerPopup.addEventListener("click", () => {
 });
 
 //
-navigationSit.addEventListener("click", () => {
-  menuSub.classList.add("menu-sub1--open");
-  navigationSit.classList.add("hidden");
-  navigationUp.classList.remove("hidden");
-});
+// navigationSit.addEventListener("click", () => {
+//   menuSub.classList.add("menu-sub1--open");
+//   navigationSit.classList.add("hidden");
+//   navigationUp.classList.remove("hidden");
+// });
 
-// })
-navigationUp.addEventListener("click", () => {
-  menuSub.classList.remove("menu-sub1--open");
-  navigationUp.classList.add("hidden");
-  navigationSit.classList.remove("hidden");
-});
+// // })
+// navigationUp.addEventListener("click", () => {
+//   menuSub.classList.remove("menu-sub1--open");
+//   navigationUp.classList.add("hidden");
+//   navigationSit.classList.remove("hidden");
+// });
 //
 openInput.addEventListener("click", () => {
   openInputFind.classList.remove("hidden");
