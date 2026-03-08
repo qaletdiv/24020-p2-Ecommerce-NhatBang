@@ -39,7 +39,8 @@ app.use(errorHandlerMiddleware)
 db.sequelize.authenticate()
 .then(async () => {
     console.log('ket noi database thanh cong') ;
-    await db.sequelize.sync(); 
+
+    await db.sequelize.sync({ alter: true });
     await seedAdmin() ;
 })
 .catch((error) => {
