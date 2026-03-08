@@ -70,25 +70,28 @@ function buildWhere(price, category, highlight, search) {
 const buildSort = (sort) => {
     const realPrice = Sequelize.fn(
         "IF",
-        Sequelize.where(Sequelize.col('priceSale'), ">", 0),
+        Sequelize.where(Sequelize.col("priceSale"), ">", 0),
         Sequelize.col("priceSale"),
         Sequelize.col("price")
     );
-    let order = [["id", "DESC"]];
+
     if (sort === "asc") {
-        return order = [[realPrice, "ASC"]]
+        return [[realPrice, "ASC"]];
     }
+
     if (sort === "desc") {
-        return order = [[realPrice, "DESC"]]
+        return [[realPrice, "DESC"]];
     }
-}
+
+    return [["id", "DESC"]]; // mặc định
+};
 
 exports.getAllProducts = async (req, res, next) => {
     try {
         const { category, price, search, sort, highlight, page = 1, limit = 5 } = req.query;
         const where = buildWhere(price, category, highlight, search);
         const order = buildSort(sort);
-        const offset = (page - 1) * limit;
+        const offset = (Number(page) - 1) * Number(limit);
         const { rows, count } = await Product.findAndCountAll({
             where,
             limit: Number(limit),
@@ -184,8 +187,8 @@ exports.createProduct = async (req, res, next) => {
             description,
             price: Number(price),
             priceSale: Number(priceSale),
-            sizes: JSON.parse(sizes),
-            tags: JSON.parse(tags),
+            sizes: sizes ? JSON.parse(sizes) : [],
+            tags: tags ? JSON.parse(tags) : [],
             categoryId
         });
         res.status(201).json({
