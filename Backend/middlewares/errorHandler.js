@@ -1,8 +1,9 @@
-function errorHandlerMiddleware  (error , req , res, next) {
-    console.log(`Error : ${error.stalk}`);
-    res.status(err.status || 500).json({
-        message: err.message || "Loi server vui long thu lai"
+function errorHandlerMiddleware(error, req, res, next) {
+    console.error("Error:", error.stack);
+
+    res.status(error.status || 500).json({
+        message: error.message || "Loi server vui long thu lai"
     });
-    
 }
-module.exports = errorHandlerMiddleware
+
+module.exports = errorHandlerMiddleware;
