@@ -58,21 +58,21 @@ function renderProduct(container, products) {
     divEl.classList.add('product-main');
 
     let saleHTML = '';
-    if (item.tags.includes('sale 30%')) {
+    if (item.tags?.includes('sale 30%')) {
       saleHTML = `<div class="sale">sale 30%</div>`;
-    } else if (item.tags.includes('sale 40%')) {
+    } else if (item.tags?.includes('sale 40%')) {
       saleHTML = `<div class="sale">sale 40%</div>`;
     }
 
     let priceHTML = `<p>${Number(item.price).toLocaleString('vi-VN')}đ</p>`;
     if (item.priceSale > 0 && item.priceSale < item.price) {
       priceHTML = `
-        <p>${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
-        <p class="sale-m">${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
-      `;
+            <p>${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
+            <p class="sale-m">${Number(item.price).toLocaleString('vi-VN')}đ</p>
+          `;
     }
 
-    const firstImage = item.images?.[0]?.imageUrl;
+    const firstImage = item.images?.[0]?.imageUrl || "no-image.png";
     const outSandHTML = `<img src="${ENV.API_URL}/uploads/${firstImage}" alt="${item.name}">`;
 
     divEl.innerHTML = `
@@ -112,11 +112,18 @@ async function fetchProduct() {
   if (currentSearch && currentSearch.trim() !== "") {
     url += `&search=${encodeURIComponent(currentSearch.trim())}`;
   }
-  if(currentSort) {
-    url += `&sort=${currentSort}` ;
+  if (currentSort) {
+    url += `&sort=${currentSort}`;
   }
 
   const res = await fetch(url);
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("API error:", text);
+    return;
+  }
+
   const result = await res.json();
 
   renderProduct(productMainShirtPage, result.products);
@@ -187,19 +194,19 @@ if (searchFromUrl && searchFromUrl.trim() !== "") {
 const priceGiam = document.querySelector('.price-giam');
 
 priceGiam.addEventListener('click', () => {
-  currentSort = "desc" ;
-  page = 1 ;
-  productMainShirtPage.innerHTML = '' ;
-  fetchProduct() ;
+  currentSort = "desc";
+  page = 1;
+  productMainShirtPage.innerHTML = '';
+  fetchProduct();
 });
 
 // gia tang dan 
 const priceTang = document.querySelector('.price-tang');
 priceTang.addEventListener('click', () => {
-  currentSort = 'asc' ;
-  page = 1 ;
-  productMainShirtPage.innerHTML = '' ;
-  fetchProduct() ;
+  currentSort = 'asc';
+  page = 1;
+  productMainShirtPage.innerHTML = '';
+  fetchProduct();
 })
 
 
