@@ -94,3 +94,27 @@ exports.getAllUser = async(req , res, next) => {
     const getAllUser = await User.findAll() ;
     res.json(getAllUser) ;
 }
+
+exports.updateUserRole = async(req, res, next) => {
+  try {
+      const { id } = req.params;
+      const { role } = req.body;
+      if (!role) {
+          return res.status(400).json({ message: "thieu Role" });
+      }
+      const user = await User.findByPk(id);
+      if (!user) {
+          return res.status(404).json({
+              message: "Khong tim thay user"
+          });
+      }
+      user.role = role;
+      await user.save();
+      res.json({
+          message: "Cap nhat role thanh cong",
+          data: user
+      });
+  } catch (error) {
+    next(error)
+  }
+ }

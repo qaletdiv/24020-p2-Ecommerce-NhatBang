@@ -23,7 +23,7 @@ const authenticateToken = async (req, res, next) => {
             if (!user) {
                 return res.status(401).json({ message: "Xac thuc that bai (Nguoi dung khong ton tai" });
             }
-            req.user = { userId: user.id };
+            req.user = { userId: user.id , role : user.role};
             next();
         } catch (error) {
             console.error("loi truy van nguoi dung trong Authenticate Token", error);

@@ -12,7 +12,8 @@ const productRouter = require('./routers/productRouter') ;
 const cartRouter = require('./routers/cartRouter') ;
 const historyRouter = require('./routers/historyOrderRouter')
 const orderItemRouter = require('./routers/orderItemRouter');
-const ProductImageRouter = require('./routers/productImageRouter')
+const ProductImageRouter = require('./routers/productImageRouter') ;
+const seedAdmin = require('./controllers/seedAdmin');
 const db = require('./models') ;
 
 const PORT = process.env.PORT || 3000;
@@ -36,8 +37,9 @@ app.use('/api/orderItem' , orderItemRouter) ;
 
 app.use(errorHandlerMiddleware)
 db.sequelize.authenticate()
-.then(() => {
-    console.log('ket noi database thanh cong')
+.then(async () => {
+    console.log('ket noi database thanh cong') ;
+    await seedAdmin() ;
 })
 .catch((error) => {
     console.log('ket noi database that bai' , error)

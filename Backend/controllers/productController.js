@@ -1,6 +1,4 @@
 const { Product, Category, Sequelize, sequelize, Product_Image } = require('../models');
-const path = require('path');
-const fs = require('fs');
 const { Op, or } = require('sequelize')
 
 const priceRanges = {
@@ -180,14 +178,12 @@ exports.createProduct = async (req, res, next) => {
     try {
 
         const { name, description, price, priceSale, sizes, tags, categoryId } = req.body;
-        const processedImage = req.file ? req.file.processedFileName : null;
 
         const newProduct = await Product.create({
             name,
             description,
             price: Number(price),
             priceSale: Number(priceSale),
-            imageURL: processedImage,
             sizes: JSON.parse(sizes),
             tags: JSON.parse(tags),
             categoryId
@@ -207,7 +203,6 @@ exports.updateProduct = async (req, res, next) => {
             return res.status(404).json({ message: 'Khong tim thay san pham' });
         }
         const { name, description, price, priceSale, sizes, tags, categoryId } = req.body;
-        const processedImage = req.file ? req.file.processedFileName : null;
 
         const updateData = {
             name,
@@ -219,16 +214,6 @@ exports.updateProduct = async (req, res, next) => {
             categoryId
         };
 
-        if (processedImage) {
-            if (product.imageURL) {
-                const oldImagePath = path.join(__dirname, '../public/uploads', product.imageURL);
-                fs.unlink(oldImagePath, (err) => {
-                    if (err) console.log('loi xoa anh cu', err.message)
-                })
-
-            }
-            updateData.imageURL = processedImage;
-        }
 
         const [updatedRows] = await Product.update(updateData, {
             where: {
