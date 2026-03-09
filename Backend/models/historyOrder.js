@@ -23,15 +23,18 @@ module.exports = (sequelize, DataTypes) => {
             },
 
             receiverName: {
-                type: DataTypes.STRING(100)
+                type: DataTypes.STRING(100),
+                allowNull: false
             },
 
             phone: {
-                type: DataTypes.STRING(20)
+                type: DataTypes.STRING(20),
+                allowNull: false
             },
 
             email: {
-                type: DataTypes.STRING(100)
+                type: DataTypes.STRING(100),
+                allowNull: false
             },
 
             shippingAddress: {
@@ -47,6 +50,11 @@ module.exports = (sequelize, DataTypes) => {
             orderStatus: {
                 type: DataTypes.ENUM("Đang chờ xử lý", "Đã giao hàng", "Hoàn thành"),
                 defaultValue: "Đang chờ xử lý"
+            },
+            paymentMethod: {
+                type: DataTypes.ENUM("COD", "BANK_TRANSFER"),
+                allowNull: false,
+                defaultValue: "COD"
             }
         },
         {

@@ -53,6 +53,7 @@ create table historyOrders (
     receiverName VARCHAR(100),
     phone VARCHAR(20),
     email VARCHAR(100),
+      paymentMethod enum('COD','BANK_TRANSFER') default 'COD',
     totalPrice decimal(10,2) not null ,
     orderStatus enum("Đang chờ xử lý" , "Đã giao hàng" ,"Hoàn thành") default "Đang chờ xử lý" ,
 	shippingAddress TEXT NOT NULL,

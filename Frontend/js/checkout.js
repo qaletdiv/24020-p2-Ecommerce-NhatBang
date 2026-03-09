@@ -113,6 +113,7 @@ buttonSubmit.addEventListener('click', async (event) => {
   const shippingAddress = inputAddress.value.trim();
   const email = inputEmail.value.trim();
   const phone = inputPhone.value.trim();
+  const paymentMethod = document.querySelector('#select-thanh-toan').value;
   const orderStatus = 'Đang chờ xử lý';
   const token = localStorage.getItem('accessToken');
 
@@ -144,7 +145,7 @@ buttonSubmit.addEventListener('click', async (event) => {
         phone,
         email,
         shippingAddress,
-        orderStatus
+        paymentMethod
       })
     });
 

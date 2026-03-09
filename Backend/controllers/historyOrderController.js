@@ -2,8 +2,10 @@
 
 exports.createHistoryOrder = async (req, res, next) => {
     try {
+        console.log(req.user);
         const userId = req.user.userId || req.user.id;
-        const { totalPrice, receiverName, phone, email , orderStatus , shippingAddress } = req.body;
+        const { totalPrice, receiverName, phone, email, shippingAddress } = req.body;
+        const paymentMethod = req.body.paymentMethod || "COD";
 
         // 1. Tạo đơn hàng
         const order = await HistoryOrder.create({
@@ -12,8 +14,8 @@ exports.createHistoryOrder = async (req, res, next) => {
             email , 
             phone ,
             totalPrice,
-            orderStatus,
-            shippingAddress
+            shippingAddress ,
+            paymentMethod
         });
 
         res.status(201).json({
