@@ -36,16 +36,18 @@ app.use('/api/historyOrder' , historyRouter) ;
 app.use('/api/orderItem' , orderItemRouter) ;
 
 app.use(errorHandlerMiddleware)
-db.sequelize.authenticate()
-.then(async () => {
-    console.log('ket noi database thanh cong') ;
+async function startServer() {
+    try {
+        await db.sequelize.authenticate();
+        console.log("ket noi database thanh cong");
 
-    await db.sequelize.sync({ alter: true });
-    // await seedAdmin() ;
-})
-.catch((error) => {
-    console.log('ket noi database that bai' , error)
-})
-app.listen(PORT ,() => {
-    console.log(`Su kien lang nghe tai http://localhost:${PORT}`)
-})
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`);
+        });
+
+    } catch (error) {
+        console.log("ket noi database that bai", error);
+    }
+}
+
+startServer();
