@@ -1,89 +1,83 @@
 create database e_commerce_shopping ; 
 use e_commerce_shopping ; 
--- Nguoi dung 
-create table users (
-	id int primary key auto_increment ,
-    fullName varchar(100) not null ,
-    email varchar(100)  unique not null  ,
-    password varchar(255) not null ,
-    address text ,
-    phone varchar(15) ,
-    role enum("user" , "admin" ) default "user" ,
-	createdAt datetime,
-    updatedAt datetime
-    
-) ;
--- Danh muc ( 1 Danh muc - N San Pham )
-create table categories (
-	id int primary key auto_increment ,
-    name varchar(100) not null 
-) ;
-
-create table products (
-	id int primary key auto_increment ,
-    name varchar(255) not null ,
-    price decimal(10,2) not null ,
-    priceSale decimal(10,2) ,
-    description text ,
-	sizes json ,
-    tags json ,
-    categoryId int ,
-    foreign key (categoryId ) references categories(id)
-) ;
-create table productImages (
-	id int primary key auto_increment ,
-    imageUrl varchar(255) ,
-    productId int ,
-    foreign key (productId) references products (id)
+CREATE TABLE users (
+  id INT NOT NULL AUTO_INCREMENT,
+  fullName VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  address TEXT,
+  phone VARCHAR(15),
+  role ENUM('user','admin') DEFAULT 'user',
+  createdAt DATETIME,
+  updatedAt DATETIME,
+  PRIMARY KEY (id),
+  UNIQUE (email)
 );
 
-create table carts (
-	id int primary key auto_increment ,
-    quantity int default 1 ,
-    userId int ,
-    productId int  ,
-    sizeSelected varchar(10) ,
-    foreign key (userId ) references users(id) ,
-    foreign key (productId ) references products(id) 
-    
-) ;
-create table historyOrders (
-	id int primary key  auto_increment ,
-    userId int ,
-    receiverName VARCHAR(100),
-    phone VARCHAR(20),
-    email VARCHAR(100),
-      paymentMethod enum('COD','BANK_TRANSFER') default 'COD',
-    totalPrice decimal(10,2) not null ,
-    orderStatus enum("Đang chờ xử lý" , "Đã giao hàng" ,"Hoàn thành") default "Đang chờ xử lý" ,
-	shippingAddress TEXT NOT NULL,
-    createdAt datetime,
-    updatedAt datetime ,
-    foreign key (userId) references users(id)
-    
+CREATE TABLE categories (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id)
 );
 
+CREATE TABLE products (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  priceSale DECIMAL(10,2),
+  description TEXT,
+  sizes JSON,
+  tags JSON,
+  categoryId INT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (categoryId) REFERENCES categories(id)
+);
 
-create table orderItems (
-	id int primary key auto_increment ,
-    orderId int ,
-    productId int ,
-    quantity int not null ,
-    priceAtPurchase decimal(10,2) not null , -- Giá lúc mua (tránh bị thay đổi khi sp đổi giá) 
-    sizeSelected varchar(10) ,
-    createdAt datetime,
-    updatedAt datetime ,
-    foreign key (orderId ) references historyOrders(id) ,
-    foreign key (productId ) references products(id) 
-)
+CREATE TABLE productImages (
+  id INT NOT NULL AUTO_INCREMENT,
+  imageUrl VARCHAR(255),
+  productId INT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (productId) REFERENCES products(id)
+);
 
-select * from products ;
+CREATE TABLE carts (
+  id INT NOT NULL AUTO_INCREMENT,
+  quantity INT DEFAULT 1,
+  userId INT,
+  productId INT,
+  sizeSelected VARCHAR(10),
+  PRIMARY KEY (id),
+  FOREIGN KEY (userId) REFERENCES users(id),
+  FOREIGN KEY (productId) REFERENCES products(id)
+);
 
-select * from historyOrders;
-select * from carts ;
-select * from users ;
-DROP TABLE IF EXISTS carts;
-DROP TABLE IF EXISTS historyOrders ;
-DROP TABLE IF EXISTS products;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS users;
+CREATE TABLE historyOrders (
+  id INT NOT NULL AUTO_INCREMENT,
+  userId INT,
+  totalPrice DECIMAL(10,2) NOT NULL,
+  orderStatus ENUM('Đang chờ xử lý','Đã giao hàng','Hoàn thành') DEFAULT 'Đang chờ xử lý',
+  shippingAddress TEXT NOT NULL,
+  receiverName VARCHAR(100),
+  phone VARCHAR(20),
+  email VARCHAR(100),
+  paymentMethod ENUM('COD','BANK_TRANSFER') DEFAULT 'COD',
+  createdAt DATETIME,
+  updatedAt DATETIME,
+  PRIMARY KEY (id),
+  FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+CREATE TABLE orderItems (
+  id INT NOT NULL AUTO_INCREMENT,
+  orderId INT,
+  productId INT,
+  quantity INT NOT NULL,
+  priceAtPurchase DECIMAL(10,2) NOT NULL,
+  sizeSelected VARCHAR(10),
+  createdAt DATETIME,
+  updatedAt DATETIME,
+  PRIMARY KEY (id),
+  FOREIGN KEY (orderId) REFERENCES historyOrders(id),
+  FOREIGN KEY (productId) REFERENCES products(id)
+);
