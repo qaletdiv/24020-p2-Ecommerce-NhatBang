@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(requestLoggerMiddleware) ;
 
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '/public/uploads')));
 app.use(express.json())
 
 

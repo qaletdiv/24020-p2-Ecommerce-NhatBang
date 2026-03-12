@@ -135,7 +135,7 @@ exports.getProductId = async (req, res, next) => {
                     model: Category,
                     as: "category"
                 },
-                { model: Product_Image, as: "images", attributes: ["id", "imageUrl"] }
+                { model: Product_Image, as: "images", attributes: ["id", "imageUrl"], separate: true }
             ]
         })
         if (!product) {
