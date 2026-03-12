@@ -71,6 +71,12 @@
   border: 0.1rem solid;
   border-radius: 1rem;
 }
+.name-za {
+  padding: 1rem;
+  background-color: #88828228;
+  border: 0.1rem solid;
+  border-radius: 1rem;
+}
 .price-giam{
   padding: 1rem;
   background-color: #88828228;
@@ -87,6 +93,11 @@
   cursor: pointer;
   opacity: 0.7;
 }
+.name-za:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
 .price-giam:hover {
   cursor: pointer;
   opacity: 0.7;

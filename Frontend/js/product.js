@@ -118,7 +118,6 @@ async function fetchProduct() {
   if (currentSort) {
     url += `&sort=${currentSort}`;
   }
-
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -212,7 +211,23 @@ priceTang.addEventListener('click', () => {
   fetchProduct();
 })
 
+// loc theo ten (A - Z)
+const nameAsc = document.querySelector('.name-az') ;
+nameAsc.addEventListener('click' ,() => {
+  currentSort ='asc' ;
+  page = 1 ;
+  productMainShirtPage.innerHTML = '' ;
+  fetchProduct() ;
+})
 
+// loc theo ten (Z - A)
+const nameDesc = document.querySelector('.name-za');
+nameDesc.addEventListener('click', () => {
+  currentSort = 'desc';
+  page = 1;
+  productMainShirtPage.innerHTML = '';
+  fetchProduct();
+})
 //
 // hien co bao nhieu san pham tren icon gio hang 
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
