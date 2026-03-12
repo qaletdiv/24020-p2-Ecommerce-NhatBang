@@ -78,6 +78,12 @@ const buildSort = (sort) => {
     if (sort === "asc") {
         return [[realPrice, "ASC"]];
     }
+    if (sort === "name-az") {
+        return [["name", "ASC"]];
+    }
+    if (sort === "name-ZA") {
+        return [["name", "DESC"]];
+    }
 
     if (sort === "desc") {
         return [[realPrice, "DESC"]];
@@ -88,14 +94,15 @@ const buildSort = (sort) => {
 
 exports.getAllProducts = async (req, res, next) => {
     try {
-        const { category, price, search, sort, highlight, page = 1, limit = 5 } = req.query;
-        const where = buildWhere(price, category, highlight, search);
+        const { category, price,name , search, sort, highlight, page = 1, limit = 5 } = req.query;
+        const where = buildWhere(price, category, highlight, search ,name);
         const order = buildSort(sort);
         const offset = (Number(page) - 1) * Number(limit);
         const { rows, count } = await Product.findAndCountAll({
             where,
             limit: Number(limit),
             offset: Number(offset),
+            distinct: true,
             order,
             include: [
                 {

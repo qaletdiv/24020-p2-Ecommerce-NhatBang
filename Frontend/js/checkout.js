@@ -54,7 +54,8 @@ async function loadCartCheckout() {
 
   currentCart.forEach(item => {
     const product = item.product;
-    const subTotal = item.quantity * product.price;
+    const price = (product.priceSale && product.priceSale < product.price) ? product.priceSale : product.price
+    const subTotal = item.quantity * price;
     const img = product.images?.[0]?.imageUrl || "";
     totalAll += subTotal;
 
