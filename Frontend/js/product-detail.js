@@ -219,10 +219,15 @@ fetch(`${ENV.API_URL}/api/products/${productID}`)
     if (productDetail.images && productDetail.images.length > 0) {
       firstImageDetail = productDetail.images[0].imageUrl;
     }
+    const thumbsHTML = productDetail.images.map(img => {
+      return ` <img src="${ENV.API_URL}/uploads/${img.imageUrl}" class="thumb">`
+    }).join('')
     detailMain.innerHTML = `
       <div class="img-detail">
-         <img src="${ENV.API_URL}/uploads/${firstImageDetail}" alt="">
-          <div class="product_overlay_detail"></div>
+         <img id="main-image"  src="${ENV.API_URL}/uploads/${firstImageDetail}" alt="">
+         <div class="list-image">
+                   ${thumbsHTML}              
+                </div>
       </div>
       <div class="content-product">
           <p class="name-detail">${productDetail.name}</p>
@@ -249,6 +254,18 @@ fetch(`${ENV.API_URL}/api/products/${productID}`)
           </div>
       </div>
     `;
+
+    // tah doi anh khi click anh nguoi dung tham khao 
+    const mainImage = document.getElementById("main-image");
+    const thumbs = document.querySelectorAll(".thumb");
+
+    thumbs.forEach(img => {
+      img.addEventListener("click", () => {
+        mainImage.src = img.src;
+      });
+    });
+
+
     const spanMinus = document.querySelector('.minus');
     const spanPlus = document.querySelector('.plus');
     const quantityDetail = document.getElementById('quantity-detail')
