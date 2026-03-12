@@ -65,7 +65,7 @@ function renderProduct(container, products, isAppend = false) {
     }
 
     let priceHTML = `<p>${item.price.toLocaleString('vi-VN')}đ</p>`;
-    if (item.priceSale> 0 && item.priceSale < item.price) {
+    if (item.priceSale > 0 && item.priceSale < item.price) {
       priceHTML = `
         <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
         <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
@@ -283,20 +283,20 @@ fetch(`${ENV.API_URL}/api/products/${productID}`)
       const size = document.getElementById('select-drop-size').value;
       const quantity = parseInt(document.getElementById('quantity-detail').value);
       const data = {
-        userId : parseUser.id ,
-        productId : productDetail.id ,
+        userId: parseUser.id,
+        productId: productDetail.id,
         sizeSelected: size,
-        quantity: quantity  
+        quantity: quantity
       }
       try {
-        const res = await fetch(`${ENV.API_URL}/api/cart` ,{
-          method : 'POST' ,
-          headers : {
+        const res = await fetch(`${ENV.API_URL}/api/cart`, {
+          method: 'POST',
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body : JSON.stringify(data)
-          
+          body: JSON.stringify(data)
+
         })
         await res.json()
         alert('Thêm giỏ hàng thành công')

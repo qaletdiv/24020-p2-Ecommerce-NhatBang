@@ -56,7 +56,7 @@ function renderProduct(container, products) {
 
     const divEl = document.createElement('div');
     divEl.classList.add('product-main');
-
+    divEl.dataset.id = item.id ;
     let saleHTML = '';
     if (item.tags?.includes('sale 30%')) {
       saleHTML = `<div class="sale">sale 30%</div>`;
@@ -86,6 +86,9 @@ function renderProduct(container, products) {
       <a href="product-detail.html?id=${item.id}" class="product_name">${item.name}</a>
       <div class="money_sale">
         ${priceHTML}
+      </div>
+      <div class="div-add-cart">
+          <button class="button-add-cart">Add to cart</button>
       </div>
     `;
 
@@ -283,6 +286,48 @@ buttonMyAccount.addEventListener('click', () => {
     window.location.href = 'register.html'
   }
 })
+/// nut add to cart 
+productMainShirtPage.addEventListener('click', async (e) => {
+  if (!e.target.classList.contains('button-add-cart')) return  /// e.target : la phan tu nguoi dung  khi click , classList.contains() : la kiem tra class co ton tai hay khong 
+  const productCard = e.target.closest('.product-main') ; // closest : tim the cha gan nhat 
+  const productId = productCard.dataset.id ;
 
+  const token = localStorage.getItem('accessToken');
+  const parseUser = JSON.parse(localStorage.getItem('currentUser'));
+
+  if (!token || !parseUser) {
+    alert('Đăng nhập trước khi thêm vào giỏ hàng');
+    window.location.href = 'login.html';
+    return;
+  }
+
+
+  const data = {
+    userId: parseUser.id,
+    productId: productId,
+    sizeSelected: "M",
+    quantity: 1
+  }
+  try {
+    const res = await fetch(`${ENV.API_URL}/api/cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+
+    })
+    await res.json()
+    const result = confirm("Đã thêm vào giỏ hàng. Bạn có muốn xem giỏ hàng không?");
+
+    if (result) {
+      window.location.href = 'cart.html';
+    }
+  } catch (error) {
+    console.log(err);
+    alert("Lỗi thêm giỏ hàng");
+  }
+})
 fetchProduct();
 loadCartQuantityIcon()
