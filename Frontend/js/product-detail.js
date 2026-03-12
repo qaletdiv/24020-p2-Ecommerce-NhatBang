@@ -202,6 +202,8 @@ let currentCategoryId = null;
 fetch(`${ENV.API_URL}/api/products/${productID}`)
   .then(res => res.json())
   .then(productDetail => {
+    console.log("images:", productDetail.images);
+    console.log("length:", productDetail.images.length);
 
     if (!productDetail) return;
     currentCategoryId = productDetail.categoryId;
@@ -220,7 +222,8 @@ fetch(`${ENV.API_URL}/api/products/${productID}`)
       firstImageDetail = productDetail.images[0].imageUrl;
     }
     const thumbsHTML = productDetail.images.map(img => {
-      return ` <img src="${ENV.API_URL}/uploads/${img.imageUrl}" class="thumb">`
+      return ` <img src="${ENV.API_URL}/uploads/${img.imageUrl}" class="thumb">
+      `
     }).join('')
     detailMain.innerHTML = `
       <div class="img-detail">
