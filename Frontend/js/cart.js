@@ -123,31 +123,32 @@ const renderCartUI = (cartItem) => {
   const divContentCart = document.querySelector('.content-cart')
   cartItem.forEach(item => {
     const product = item.product;
-    const price = (product.priceSale && product.priceSale < product.price) ? product.priceSale : product.price
+    const price = (Number(product.priceSale) && Number(product.priceSale) < Number(product.price)) ? Number(product.priceSale)
+      : Number(product.price);
     const subTotal = item.quantity * price;
     const img = product.images?.[0]?.imageUrl || "";
     totalAll += subTotal;
     totalQuantity += item.quantity;
     const divEl = document.createElement('div');
     divEl.innerHTML = `
-        <div class="content-cart-page" data-id="${item.productId}" data-size="${item.sizeSelected}">
-            <div class="content-item img-cart">
-                <img src="${ENV.API_URL}/uploads/${img}" alt="">
-                <div class="content-cart-product">
-                    <p>Mã: ${item.productId}, Size: ${item.sizeSelected}</p>
-                    <h1>${product.name}</h1>
-                    <button class="button-cart-remove">Remove</button>
-                </div>
-            </div>
-            <div class="quantity-item">
-                <span class="span-detail minus">-</span>  
-                <input type="number" class="quantity-cart" value="${item.quantity}" readonly>
-                <span class="span-detail plus">+</span>
-            </div>
-            <div class="price-item">
-                <span>${subTotal.toLocaleString('vi-VN')} đ</span>
-            </div>
-        </div>`;
+          <div class="content-cart-page" data-id="${item.productId}" data-size="${item.sizeSelected}">
+              <div class="content-item img-cart">
+                  <img src="${ENV.API_URL}/uploads/${img}" alt="">
+                  <div class="content-cart-product">
+                      <p>Mã: ${item.productId}, Size: ${item.sizeSelected}</p>
+                      <h1>${product.name}</h1>
+                      <button class="button-cart-remove">Remove</button>
+                  </div>
+              </div>
+              <div class="quantity-item">
+                  <span class="span-detail minus">-</span>  
+                  <input type="number" class="quantity-cart" value="${item.quantity}" readonly>
+                  <span class="span-detail plus">+</span>
+              </div>
+              <div class="price-item">
+                  <span>${subTotal.toLocaleString('vi-VN')} đ</span>
+              </div>
+          </div>`;
     divContentCart.appendChild(divEl);
   })
   const divTotal = document.createElement('div');
