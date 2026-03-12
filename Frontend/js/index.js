@@ -141,7 +141,7 @@ function renderProduct(container, products) {
     if (item.priceSale > 0 && item.priceSale < item.price) {
       priceHTML = `
         <p>${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
-        <p class="sale-m">${Number(item.priceSale).toLocaleString('vi-VN')}đ</p>
+        <p class="sale-m">${Number(item.price).toLocaleString('vi-VN')}đ</p>
       `;
     }
     const firstImage = item.images?.[0]?.imageUrl;

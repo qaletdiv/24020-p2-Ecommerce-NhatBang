@@ -65,7 +65,7 @@ function renderProduct(container, products, isAppend = false) {
     }
 
     let priceHTML = `<p>${item.price.toLocaleString('vi-VN')}đ</p>`;
-    if (item.priceSale > 0 && item.priceSale < item.price) {
+    if (item.priceSale> 0 && item.priceSale < item.price) {
       priceHTML = `
         <p>${item.priceSale.toLocaleString('vi-VN')}đ</p>
         <p class="sale-m">${item.price.toLocaleString('vi-VN')}đ</p>
@@ -213,7 +213,7 @@ fetch(`${ENV.API_URL}/api/products/${productID}`)
 
     let priceHTML = `<p class="price-detail">${Number(productDetail.price).toLocaleString('vi-VN')} VND</p>`;
     if (productDetail.priceSale > 0 && productDetail.priceSale < productDetail.price) {
-      priceHTML = `<p class="price-detail">${Number(productDetail.price).toLocaleString('vi-VN')} VND</p>`;
+      priceHTML = `<p class="price-detail">${Number(productDetail.priceSale).toLocaleString('vi-VN')} VND</p>`;
     }
     let firstImageDetail = "";
     if (productDetail.images && productDetail.images.length > 0) {
