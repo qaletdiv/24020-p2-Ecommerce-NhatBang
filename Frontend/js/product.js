@@ -56,7 +56,7 @@ function renderProduct(container, products) {
 
     const divEl = document.createElement('div');
     divEl.classList.add('product-main');
-
+    divEl.dataset.id = item.id ;
     let saleHTML = '';
     if (item.tags?.includes('sale 30%')) {
       saleHTML = `<div class="sale">sale 30%</div>`;
@@ -87,6 +87,9 @@ function renderProduct(container, products) {
       <div class="money_sale">
         ${priceHTML}
       </div>
+      <div class="div-add-cart">
+          <button class="button-add-cart">Add to cart</button>
+      </div>
     `;
 
     container.appendChild(divEl);
@@ -115,7 +118,6 @@ async function fetchProduct() {
   if (currentSort) {
     url += `&sort=${currentSort}`;
   }
-
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -209,7 +211,23 @@ priceTang.addEventListener('click', () => {
   fetchProduct();
 })
 
+// loc theo ten (A - Z)
+const nameAsc = document.querySelector('.name-az') ;
+nameAsc.addEventListener('click' ,() => {
+  currentSort ='asc' ;
+  page = 1 ;
+  productMainShirtPage.innerHTML = '' ;
+  fetchProduct() ;
+})
 
+// loc theo ten (Z - A)
+const nameDesc = document.querySelector('.name-za');
+nameDesc.addEventListener('click', () => {
+  currentSort = 'desc';
+  page = 1;
+  productMainShirtPage.innerHTML = '';
+  fetchProduct();
+})
 //
 // hien co bao nhieu san pham tren icon gio hang 
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -283,6 +301,48 @@ buttonMyAccount.addEventListener('click', () => {
     window.location.href = 'register.html'
   }
 })
+/// nut add to cart 
+productMainShirtPage.addEventListener('click', async (e) => {
+  if (!e.target.classList.contains('button-add-cart')) return  /// e.target : la phan tu nguoi dung  khi click , classList.contains() : la kiem tra class co ton tai hay khong 
+  const productCard = e.target.closest('.product-main') ; // closest : tim the cha gan nhat 
+  const productId = productCard.dataset.id ;
 
+  const token = localStorage.getItem('accessToken');
+  const parseUser = JSON.parse(localStorage.getItem('currentUser'));
+
+  if (!token || !parseUser) {
+    alert('Đăng nhập trước khi thêm vào giỏ hàng');
+    window.location.href = 'login.html';
+    return;
+  }
+
+
+  const data = {
+    userId: parseUser.id,
+    productId: productId,
+    sizeSelected: "M",
+    quantity: 1
+  }
+  try {
+    const res = await fetch(`${ENV.API_URL}/api/cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+
+    })
+    await res.json()
+    const result = confirm("Đã thêm vào giỏ hàng. Bạn có muốn xem giỏ hàng không?");
+
+    if (result) {
+      window.location.href = 'cart.html';
+    }
+  } catch (error) {
+    console.log(err);
+    alert("Lỗi thêm giỏ hàng");
+  }
+})
 fetchProduct();
 loadCartQuantityIcon()

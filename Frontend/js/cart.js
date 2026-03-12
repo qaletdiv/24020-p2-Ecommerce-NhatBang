@@ -123,7 +123,8 @@ const renderCartUI = (cartItem) => {
   const divContentCart = document.querySelector('.content-cart')
   cartItem.forEach(item => {
     const product = item.product;
-    const subTotal = item.quantity * product.price;
+    const price = (product.priceSale && product.priceSale < product.price) ? product.priceSale : product.price
+    const subTotal = item.quantity * price;
     const img = product.images?.[0]?.imageUrl || "";
     totalAll += subTotal;
     totalQuantity += item.quantity;
