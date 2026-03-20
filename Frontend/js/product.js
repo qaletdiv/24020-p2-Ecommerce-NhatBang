@@ -98,7 +98,8 @@ function renderProduct(container, products) {
 let currentCategory = 'all';
 let currentPrice = 'all';
 let currentSearch = '';
-let currentSort = ''
+let currentSort = '' 
+
 let page = 1;
 const limit = 4;
 
@@ -214,7 +215,7 @@ priceTang.addEventListener('click', () => {
 // loc theo ten (A - Z)
 const nameAsc = document.querySelector('.name-az') ;
 nameAsc.addEventListener('click' ,() => {
-  currentSort ='asc' ;
+  currentSort ='name-az' ;
   page = 1 ;
   productMainShirtPage.innerHTML = '' ;
   fetchProduct() ;
@@ -223,7 +224,7 @@ nameAsc.addEventListener('click' ,() => {
 // loc theo ten (Z - A)
 const nameDesc = document.querySelector('.name-za');
 nameDesc.addEventListener('click', () => {
-  currentSort = 'desc';
+  currentSort = 'name-za';
   page = 1;
   productMainShirtPage.innerHTML = '';
   fetchProduct();
